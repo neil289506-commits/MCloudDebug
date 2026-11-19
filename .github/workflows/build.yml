@@ -1,0 +1,94 @@
+name: Build (Windows / Qt 6.11.2 / MSVC 2022)
+
+on:
+  push:
+    branches: [main, master]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+# 同一個分支有新提交時，取消舊的執行
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  QT_VERSION: '6.11.2'
+  QT_ARCH: 'win64_msvc2022_64'   # install-qt-action 文件：Qt >= 6.8 的 Windows 預設架構
+  APP_NAME: MCDebugger
+
+jobs:
+  build:
+    runs-on: windows-2022        # 內建 Visual Studio 2022 (MSVC 2022)
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Qt ${{ env.QT_VERSION }}
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          host: windows
+          target: desktop
+          arch: ${{ env.QT_ARCH }}
+          cache: true            # 快取 Qt 安裝，加速後續執行
+
+      - name: Configure
+        shell: pwsh
+        run: >
+          cmake -S . -B build
+          -G "Visual Studio 17 2022" -A x64
+          -DCMAKE_PREFIX_PATH="$env:QT_ROOT_DIR"
+
+      - name: Build (Release)
+        shell: pwsh
+        run: cmake --build build --config Release --parallel
+
+      - name: Deploy Qt runtime (windeployqt)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/$env:APP_NAME | Out-Null
+          Copy-Item "build/Release/$env:APP_NAME.exe" "dist/$env:APP_NAME/"
+          & "$env:QT_ROOT_DIR/bin/windeployqt.exe" --release --no-translations --compiler-runtime "dist/$env:APP_NAME/$env:APP_NAME.exe"
+          Copy-Item README.md "dist/$env:APP_NAME/"
+          Get-ChildItem "dist/$env:APP_NAME" | Select-Object Name, Length
+
+      - name: Smoke test (程式能啟動且不立刻崩潰)
+        shell: pwsh
+        run: |
+          $p = Start-Process "dist/$env:APP_NAME/$env:APP_NAME.exe" -PassThru
+          Start-Sleep -Seconds 5
+          if ($p.HasExited) { throw "程式在 5 秒內就結束了，結束代碼 $($p.ExitCode)" }
+          Stop-Process -Id $p.Id -Force
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $ver = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME } else { "dev-$($env:GITHUB_SHA.Substring(0,7))" }
+          $zip = "$env:APP_NAME-$ver-win64.zip"
+          Compress-Archive -Path "dist/$env:APP_NAME" -DestinationPath $zip
+          "ZIP_NAME=$zip" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ZIP_NAME }}
+          path: ${{ env.ZIP_NAME }}
+          if-no-files-found: error
+
+      # 只有推 v* 標籤時才建立 Release（需要寫入權限，所以放在獨立步驟並提升權限）
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.zip
+          generate_release_notes: true
