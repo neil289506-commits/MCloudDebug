@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>下載 · MC Debugger</title>
-<meta name="description" content="取得 Windows 版，或自行從原始碼建置。">
+<meta name="description" content="MCloudDebug-Windows-AMD64.zip，固定檔名直連下載。">
 <meta name="theme-color" content="#0b1118">
 <meta property="og:title" content="下載 · MC Debugger">
-<meta property="og:description" content="取得 Windows 版，或自行從原始碼建置。">
+<meta property="og:description" content="MCloudDebug-Windows-AMD64.zip，固定檔名直連下載。">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
 <link rel="stylesheet" href="assets/css/style.css">
@@ -22,15 +22,19 @@
     <button id="menu" class="icon only-m" aria-label="選單" aria-expanded="false">☰</button>
   </div>
 </div></header>
-<section class="phead"><div class="wrap"><h1>下載</h1><p>取得 Windows 版，或自行從原始碼建置。</p></div></section>
+<section class="phead"><div class="wrap"><h1>下載</h1><p>MCloudDebug-Windows-AMD64.zip，固定檔名直連下載。</p></div></section>
 <main class="wrap">
 
 <div class="grid">
- <div class="card"><div class="ico">⬇</div><h3>Release 版本</h3><p>推送 <code>v*</code> 標籤時，CI 會自動建置並發佈壓縮包（含 windeployqt 的 Qt 執行環境、README、授權）。</p><p style="margin-top:12px"><a class="btn p" href="https://github.com/neil289506-commits/MCloudDebug/releases">前往 Releases</a></p></div>
- <div class="card"><div class="ico">🛠</div><h3>自行建置</h3><p>想用最新原始碼？依<a href="build.html">建置說明</a>用 Qt Creator 或 CMake 編譯。</p></div>
+ <div class="card"><div class="ico">⬇</div><h3>MCloudDebug-Windows-AMD64.zip</h3><p>Windows x64。檔名固定，直連永遠指向最新 Release。</p><p style="margin-top:12px"><a class="btn p" href="https://github.com/neil289506-commits/MCloudDebug/releases/latest/download/MCloudDebug-Windows-AMD64.zip">直接下載</a></p></div>
+ <div class="card"><div class="ico">🛠</div><h3>只從原始碼建置</h3><p>這個壓縮檔由 GitHub Actions 從原始碼編譯產生，儲存庫裡沒有預先放入的執行檔。想自己編譯見<a href="build.html">建置說明</a>。</p></div>
 </div>
+<h2>直連網址</h2>
+<div class="code"><button class="copy" type="button">複製</button><pre><code>https://github.com/neil289506-commits/MCloudDebug/releases/latest/download/MCloudDebug-Windows-AMD64.zip</code></pre></div>
+<p>可以直接用在腳本或下載器，網址不會因版本更新而改變：</p>
+<div class="code"><button class="copy" type="button">複製</button><pre><code>curl -L -o MCloudDebug-Windows-AMD64.zip https://github.com/neil289506-commits/MCloudDebug/releases/latest/download/MCloudDebug-Windows-AMD64.zip</code></pre></div>
 <h2>系統需求</h2>
-<ul class="l"><li>Windows（DPAPI、PowerShell 解壓等功能為 Windows 專屬）</li><li>使用本地 LLM 時：足夠的硬碟與記憶體放 5 GiB 級的模型</li></ul>
+<ul class="l"><li>Windows x64（AMD64）</li><li>使用本地 LLM 時：足夠的硬碟與記憶體放 5 GiB 級的模型</li></ul>
 <div class="warn"><b>尚未在真實 Windows 環境完整實測。</b>Windows 專屬路徑（DPAPI、PowerShell 解壓、<code>CREATE_NO_WINDOW</code>）只通過語法檢查，遇到問題請到 GitHub 回報。</div>
 
 </main>

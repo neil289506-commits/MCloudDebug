@@ -36,7 +36,7 @@ cmake --build build --config Release --parallel</code></pre></div>
 <h2>發佈用打包</h2>
 <div class="code"><button class="copy" type="button">複製</button><pre><code>windeployqt --release --no-translations --compiler-runtime MCDebugger.exe</code></pre></div>
 <h2>CI</h2>
-<p>GitHub Actions 在 <code>windows-2022</code> 上建置。因 aqtinstall 目前抓不到 Qt 6.11.x，流程會依序嘗試 6.11.2 / 6.11.3 / 6.11.1，不可用時退回 6.10.3。</p>
+<p>推送 <code>v*</code> 標籤時，CI 會從原始碼建置並把 <code>MCloudDebug-Windows-AMD64.zip</code> 發佈到 Release。GitHub Actions 在 <code>windows-2022</code> 上建置。因 aqtinstall 目前抓不到 Qt 6.11.x，流程會依序嘗試 6.11.2 / 6.11.3 / 6.11.1，不可用時退回 6.10.3。</p>
 
 </main>
 <footer><div class="wrap">
