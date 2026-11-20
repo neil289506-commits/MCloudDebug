@@ -36,6 +36,13 @@ jobs:
         shell: pwsh
         run: |
           python -m pip install --quiet aqtinstall
+          # 診斷：印出各版本實際回報的架構（排查 Run #4 全部判定 unavailable 的原因）
+          foreach ($v in '6.11.3', '6.11.2', '6.10.3', '6.8.3') {
+            $raw = (python -m aqt list-qt windows desktop --arch $v 2>&1 | Out-String)
+            $one = ($raw -replace "\s+", " ")
+            if ($one.Length -gt 700) { $one = $one.Substring(0, 350) + " ... " + $one.Substring($one.Length - 350) }
+            Write-Host "::notice title=archs $v::$one"
+          }
           $picked = $null
           $report = @()
           foreach ($v in '6.11.2', '6.11.3', '6.11.1') {
