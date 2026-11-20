@@ -25,9 +25,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # runner 預設的最新 Python（3.15）讓 aqtinstall 安裝失敗（Run #1），所以固定使用 3.12
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # 診斷：列出 aqtinstall 實際提供的 Qt 6.11.2 架構（Install Qt 失敗時看這一步的輸出）
+      - name: Check Qt availability
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          python -m pip install --quiet aqtinstall
+          python -m aqt list-qt windows desktop --arch $env:QT_VERSION
+
       - name: Install Qt ${{ env.QT_VERSION }}
         uses: jurplel/install-qt-action@v4
         with:
+          setup-python: false    # 使用上面固定的 Python 3.12
           version: ${{ env.QT_VERSION }}
           host: windows
           target: desktop
