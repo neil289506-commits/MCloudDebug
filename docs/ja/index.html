@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minecraft クラッシュ診断ツール · MC Debugger</title>
+<meta name="description" content="latest.log を整理し個人情報をマスクして、AI が Minecraft のクラッシュ原因を解析します。">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="Minecraft クラッシュ診断ツール · MC Debugger">
+<meta property="og:description" content="latest.log を整理し個人情報をマスクして、AI が Minecraft のクラッシュ原因を解析します。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/ja/index.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://neil289506-commits.github.io/MCloudDebug/zh/index.html"><link rel="alternate" hreflang="en" href="https://neil289506-commits.github.io/MCloudDebug/en/index.html"><link rel="alternate" hreflang="ja" href="https://neil289506-commits.github.io/MCloudDebug/ja/index.html"><link rel="alternate" hreflang="x-default" href="https://neil289506-commits.github.io/MCloudDebug/en/index.html">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="../assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html" class="on">ホーム</a><a href="features.html">機能</a><a href="guide.html">使い方</a><a href="ai.html">AIプロバイダー</a><a href="privacy.html">プライバシーと安全性</a><a href="download.html">ダウンロード</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <div class="lang" aria-label="Language"><a href="../zh/index.html" hreflang="zh-Hant">中文</a><a href="../en/index.html" hreflang="en">EN</a><a href="../ja/index.html" hreflang="ja" class="on">日本語</a></div>
+    <button id="theme" class="icon" aria-label="テーマ切替" title="テーマ切替">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="hero"><div class="wrap">
+  <img class="lg" src="../assets/img/logo.svg" alt="MC Debugger">
+  <h1>Minecraft がクラッシュ？<br><span class="grad">ログはAIに読ませよう</span></h1>
+  <p class="lead">インスタンスを選び、<code>latest.log</code> を自動整理・個人情報をマスクして、Groq・ローカルLLM・GitHub Models に解析させます。</p>
+  <a class="btn p" href="https://github.com/neil289506-commits/MCloudDebug/releases/latest/download/MCloudDebug-Windows-AMD64.zip">⬇ Windows 版をダウンロード</a><a class="btn" href="https://github.com/neil289506-commits/MCloudDebug">ソースコード</a>
+  <div class="badges"><span class="badge">Qt 6 Widgets</span><span class="badge">Windows</span><span class="badge">DPAPIでキー暗号化</span><span class="badge">PolyForm Shield 1.0.0</span></div>
+</div></section>
+<main class="wrap">
+
+<div class="stats">
+  <div class="stat"><b class="grad">3</b><span>AIプロバイダー</span></div>
+  <div class="stat"><b class="grad">14,000</b><span>既定の文字数上限</span></div>
+  <div class="stat"><b class="grad">3</b><span>vanilla / Forge / Fabric 形式に対応</span></div>
+  <div class="stat"><b class="grad">0</b><span>追加ライブラリ（Qt Widgets + Network のみ）</span></div>
+</div>
+<h2>仕組み</h2>
+<div class="diagram reveal"><img src="../assets/img/pipeline-ja.svg" alt="フロー図"></div>
+<h2>特長</h2>
+<div class="grid g2">
+  <div class="card reveal"><div class="ico">🧹</div><h3>整理してから送信</h3><p>DEBUG と既知のノイズを除去し、重複は (×N) に統合、長いスタックは折りたたみ。トークンも節約でき、要点が伝わります。</p></div>
+  <div class="card reveal"><div class="ico">🔒</div><h3>既定でプライバシー保護</h3><p>ユーザーディレクトリ、accessToken、プレイヤー名、UUID、IP:Port をマスク。送信前に全体をプレビューできます。</p></div>
+  <div class="card reveal"><div class="ico">🧠</div><h3>3つのAIルート</h3><p>クラウドの Groq、完全オフラインの llama.cpp、GitHub PAT で使う GitHub Models から選べます。</p></div>
+  <div class="card reveal"><div class="ico">📄</div><h3>latest.log だけではない</h3><p>最新の crash-reports と hs_err_pid ネイティブクラッシュログも抽出。メインスタックと疑わしい Mod も含みます。</p></div>
+</div>
+<div class="cta reveal"><h2>さっそく使う</h2><p>解凍してすぐ使えます。追加のランタイムは不要です。</p><a class="btn p" href="guide.html">使い方を見る</a><a class="btn" href="faq.html">よくある質問</a></div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">ホーム</a><a href="features.html">機能</a><a href="guide.html">使い方</a><a href="ai.html">AIプロバイダー</a><a href="privacy.html">プライバシーと安全性</a><a href="download.html">ダウンロード</a><a href="faq.html">FAQ</a><a href="build.html">ビルド</a><a href="license.html">ライセンス</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0。Mojang / Microsoft の公式製品ではありません。</p>
+</div></footer>
+<script src="../assets/js/main.js" defer></script>
+</body></html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guide · MC Debugger</title>
+<meta name="description" content="Five steps: pick an instance, choose a provider, preview, send.">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="Guide · MC Debugger">
+<meta property="og:description" content="Five steps: pick an instance, choose a provider, preview, send.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/en/guide.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://neil289506-commits.github.io/MCloudDebug/zh/guide.html"><link rel="alternate" hreflang="en" href="https://neil289506-commits.github.io/MCloudDebug/en/guide.html"><link rel="alternate" hreflang="ja" href="https://neil289506-commits.github.io/MCloudDebug/ja/guide.html"><link rel="alternate" hreflang="x-default" href="https://neil289506-commits.github.io/MCloudDebug/en/guide.html">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="../assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html">Home</a><a href="features.html">Features</a><a href="guide.html" class="on">Guide</a><a href="ai.html">AI Providers</a><a href="privacy.html">Privacy & Security</a><a href="download.html">Download</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <div class="lang" aria-label="Language"><a href="../zh/guide.html" hreflang="zh-Hant">中文</a><a href="../en/guide.html" hreflang="en" class="on">EN</a><a href="../ja/guide.html" hreflang="ja">日本語</a></div>
+    <button id="theme" class="icon" aria-label="Toggle theme" title="Toggle theme">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="phead"><div class="wrap"><h1>Guide</h1><p>Five steps: pick an instance, choose a provider, preview, send.</p></div></section>
+<main class="wrap">
+
+<ol class="steps">
+ <li><h3>Get the app</h3><p>Download the Windows build from the <a href="download.html">download page</a>, unzip it and run <code>MCDebugger.exe</code>.</p></li>
+ <li><h3>Choose a Minecraft instance</h3><p>Pick the instance that has the problem; the app reads its <code>latest.log</code> and looks for the newest crash report.</p></li>
+ <li><h3>Pick an AI provider</h3><p>Choose Groq, local LLM or GitHub in settings and enter the matching credentials. See <a href="ai.html">AI Providers</a> for the differences.</p></li>
+ <li><h3>Check the preview</h3><p>Make sure the cleaned content and masking look right before continuing.</p></li>
+ <li><h3>Send and read the diagnosis</h3><p>The AI replies with likely causes and fixes based on the cleaned log. Treat it as a hint and verify against the original log.</p></li>
+</ol>
+<h2>Setting up each provider</h2>
+<div class="grid">
+ <div class="card"><h3>Groq</h3><p>Create an API key and paste it into settings. It is stored encrypted with DPAPI.</p></div>
+ <div class="card"><h3>GitHub Models</h3><p>Create a fine-grained PAT: Account permissions → Models → Read-only (<code>models: read</code>).</p></div>
+ <div class="card"><h3>Local LLM</h3><p>Download llama.cpp and the model from settings. The Q4_K_M model is about 5.24 GiB, so reserve disk and RAM.</p></div>
+</div>
+<div class="note"><b>Tip:</b>GitHub removed the PAT pre-fill feature from its docs in 2026-05, so the link may not fill in the fields. Use the manual steps above.</div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">Home</a><a href="features.html">Features</a><a href="guide.html">Guide</a><a href="ai.html">AI Providers</a><a href="privacy.html">Privacy & Security</a><a href="download.html">Download</a><a href="faq.html">FAQ</a><a href="build.html">Build</a><a href="license.html">License</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0. Not an official Mojang / Microsoft product.</p>
+</div></footer>
+<script src="../assets/js/main.js" defer></script>
+</body></html>

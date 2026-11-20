@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Features · MC Debugger</title>
+<meta name="description" content="The full rules for log cleanup, crash report extraction and masking.">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="Features · MC Debugger">
+<meta property="og:description" content="The full rules for log cleanup, crash report extraction and masking.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/en/features.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://neil289506-commits.github.io/MCloudDebug/zh/features.html"><link rel="alternate" hreflang="en" href="https://neil289506-commits.github.io/MCloudDebug/en/features.html"><link rel="alternate" hreflang="ja" href="https://neil289506-commits.github.io/MCloudDebug/ja/features.html"><link rel="alternate" hreflang="x-default" href="https://neil289506-commits.github.io/MCloudDebug/en/features.html">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="../assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html">Home</a><a href="features.html" class="on">Features</a><a href="guide.html">Guide</a><a href="ai.html">AI Providers</a><a href="privacy.html">Privacy & Security</a><a href="download.html">Download</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <div class="lang" aria-label="Language"><a href="../zh/features.html" hreflang="zh-Hant">中文</a><a href="../en/features.html" hreflang="en" class="on">EN</a><a href="../ja/features.html" hreflang="ja">日本語</a></div>
+    <button id="theme" class="icon" aria-label="Toggle theme" title="Toggle theme">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="phead"><div class="wrap"><h1>Features</h1><p>The full rules for log cleanup, crash report extraction and masking.</p></div></section>
+<main class="wrap">
+
+<div class="toc"><a href="#clean">Log cleanup</a><a href="#crash">Crash reports</a><a href="#mask">Masking</a><a href="#mods">Mod list</a></div>
+<h2 id="clean">Log cleanup strategy</h2>
+<p>The cleaner parses vanilla, Forge and Fabric header formats; lines without a header are treated as a continuation of the previous entry (i.e. a stack trace).</p>
+<div class="two">
+  <div class="card"><h3>✅ Keep</h3><ul class="l keep">
+    <li>ERROR / FATAL (highest priority)</li><li>WARN</li>
+    <li>INFO lines with keywords</li>
+    <li>First 12 entries (environment info)</li>
+    <li>Last 12 entries (what happened before the crash)</li>
+    <li>3 entries of context before each error</li></ul></div>
+  <div class="card"><h3>🗑 Drop / compress</h3><ul class="l drop">
+    <li>DEBUG / TRACE</li>
+    <li>Known INFO noise (resource reloads, sound init, chat…)</li>
+    <li>Identical messages (after number normalisation) merged into (×N)</li>
+    <li>At most 12 frames per stack; the rest are folded</li></ul></div>
+</div>
+<p>When over the character cap, lower-priority entries are dropped first; ERROR / FATAL are touched last. The default cap is 14,000 characters (≈4–5k tokens) because Groq's free tier and GitHub Models have small per-request token limits.</p>
+<h2 id="crash">Crash report extraction</h2>
+<div class="grid">
+  <div class="card"><h3><code>crash-reports/</code></h3><p>Takes the newest report and extracts the main stack, Head, key System Details and Suspected Mods.</p></div>
+  <div class="card"><h3><code>hs_err_pid*.log</code></h3><p>JVM native crashes: keeps the <code>#</code> summary and the native stack.</p></div>
+</div>
+<h2 id="mods">Mod list</h2>
+<p>Fabric / Quilt's <code>Loading N mods:</code> block is condensed to one line. Forge / NeoForge latest.log usually lacks a full list; when a crash report exists, the tool tries to fill it in from the <code>Mod List:</code> section.</p>
+<h2 id="mask">Personal data masking</h2>
+<div class="tw"><table>
+<tr><th>Type</th><th>Action</th></tr>
+<tr><td>Windows / Unix user directories</td><td>Masked</td></tr>
+<tr><td>accessToken, Session ID</td><td>Masked</td></tr>
+<tr><td>Player name after <code>Setting user:</code></td><td>Masked</td></tr>
+<tr><td>UUID</td><td>Masked</td></tr>
+<tr><td><code>IP:Port</code></td><td>Masked</td></tr>
+</table></div>
+<div class="warn"><b>Anonymity is not guaranteed.</b>Always review the preview before sending.</div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">Home</a><a href="features.html">Features</a><a href="guide.html">Guide</a><a href="ai.html">AI Providers</a><a href="privacy.html">Privacy & Security</a><a href="download.html">Download</a><a href="faq.html">FAQ</a><a href="build.html">Build</a><a href="license.html">License</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0. Not an official Mojang / Microsoft product.</p>
+</div></footer>
+<script src="../assets/js/main.js" defer></script>
+</body></html>

@@ -4,7 +4,7 @@
 @media(prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#f5f8fb;--bg2:#eaf0f6;--card:#fff;--card2:#f1f5f9;--line:#d6dee8;--fg:#15202b;--mut:#51657a;--acc:#15803d;--acc2:#0369a1;--warn:#b45309;--glow:rgba(21,128,61,.12);--shadow:0 10px 30px rgba(20,40,60,.1)}}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 system-ui,-apple-system,"Segoe UI","Noto Sans TC","Microsoft JhengHei",sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 system-ui,-apple-system,"Segoe UI","Noto Sans TC","Microsoft JhengHei","Noto Sans JP","Hiragino Sans","Yu Gothic",Meiryo,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--acc2);text-underline-offset:3px}
 img,svg{max-width:100%}
 .wrap{max-width:1000px;margin:0 auto;padding:0 22px}
@@ -99,12 +99,24 @@ footer{margin-top:64px;padding:30px 0 44px;border-top:1px solid var(--line);back
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .reveal{animation:rise .55s ease both}
 @media(prefers-reduced-motion:reduce){.reveal{animation:none}html{scroll-behavior:auto}.btn:hover,.card:hover{transform:none}}
-@media(max-width:860px){
+@media(max-width:1020px){
  .only-m{display:inline-block}
  nav{position:absolute;top:60px;left:0;right:0;flex-direction:column;background:var(--bg);border-bottom:1px solid var(--line);padding:8px 14px 14px;display:none}
  nav.open{display:flex}
  nav a{padding:10px 12px}
  .tools{margin-left:auto}
+}
+@media(max-width:860px){
  .two{grid-template-columns:1fr}
  .hero{padding:60px 0 44px}
 }
+
+.lang{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--card)}
+.lang a{padding:0 10px;height:34px;display:grid;place-items:center;font-size:.8rem;color:var(--mut);text-decoration:none}
+.lang a:hover{color:var(--fg);background:var(--card2)}
+.lang a.on{background:var(--glow);color:var(--acc);font-weight:700}
+
+.top .wrap{max-width:1180px}
+.brand,.lang a,nav a{white-space:nowrap}
+.lang a{padding:0 9px}
+nav a{padding:6px 9px;font-size:.9rem}

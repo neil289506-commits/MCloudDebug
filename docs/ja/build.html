@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ソースからビルド · MC Debugger</title>
+<meta name="description" content="Qt Creator または CMake でソースからコンパイルします。">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="ソースからビルド · MC Debugger">
+<meta property="og:description" content="Qt Creator または CMake でソースからコンパイルします。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/ja/build.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://neil289506-commits.github.io/MCloudDebug/zh/build.html"><link rel="alternate" hreflang="en" href="https://neil289506-commits.github.io/MCloudDebug/en/build.html"><link rel="alternate" hreflang="ja" href="https://neil289506-commits.github.io/MCloudDebug/ja/build.html"><link rel="alternate" hreflang="x-default" href="https://neil289506-commits.github.io/MCloudDebug/en/build.html">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="../assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html">ホーム</a><a href="features.html">機能</a><a href="guide.html">使い方</a><a href="ai.html">AIプロバイダー</a><a href="privacy.html">プライバシーと安全性</a><a href="download.html">ダウンロード</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <div class="lang" aria-label="Language"><a href="../zh/build.html" hreflang="zh-Hant">中文</a><a href="../en/build.html" hreflang="en">EN</a><a href="../ja/build.html" hreflang="ja" class="on">日本語</a></div>
+    <button id="theme" class="icon" aria-label="テーマ切替" title="テーマ切替">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="phead"><div class="wrap"><h1>ソースからビルド</h1><p>Qt Creator または CMake でソースからコンパイルします。</p></div></section>
+<main class="wrap">
+
+<h2>Qt Creator</h2>
+<ol class="l"><li><code>CMakeLists.txt</code> を開く</li><li>Kit は Desktop Qt 6.x MSVC2022 64-bit を選択</li><li>ビルドして実行</li></ol>
+<p>使用するのは Qt Widgets と Network のみで、Windows では <code>crypt32</code> もリンクします。最低要件は Qt 6.4 です。</p>
+<h2>コマンドライン</h2>
+<div class="code"><button class="copy" type="button" data-done="コピー済み">コピー</button><pre><code>git clone https://github.com/neil289506-commits/MCloudDebug.git
+cd MCloudDebug
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH="&lt;Qt path&gt;"
+cmake --build build --config Release --parallel</code></pre></div>
+<h2>配布用パッケージ</h2>
+<div class="code"><button class="copy" type="button" data-done="コピー済み">コピー</button><pre><code>windeployqt --release --no-translations --compiler-runtime MCDebugger.exe</code></pre></div>
+<h2>CI</h2>
+<p><code>v*</code> タグを push すると、CI がソースからビルドして <code>MCloudDebug-Windows-AMD64.zip</code> を Release に公開します。GitHub Actions は <code>windows-2022</code> でビルドします。aqtinstall が現在 Qt 6.11.x を取得できないため、6.11.2 / 6.11.3 / 6.11.1 の順に試し、使えなければ 6.10.3 にフォールバックします。</p>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">ホーム</a><a href="features.html">機能</a><a href="guide.html">使い方</a><a href="ai.html">AIプロバイダー</a><a href="privacy.html">プライバシーと安全性</a><a href="download.html">ダウンロード</a><a href="faq.html">FAQ</a><a href="build.html">ビルド</a><a href="license.html">ライセンス</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0。Mojang / Microsoft の公式製品ではありません。</p>
+</div></footer>
+<script src="../assets/js/main.js" defer></script>
+</body></html>

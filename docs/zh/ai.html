@@ -9,17 +9,21 @@
 <meta property="og:title" content="AI 管道 · MC Debugger">
 <meta property="og:description" content="Groq、本地 LLM、GitHub Models 三條路線的差異與設定。">
 <meta property="og:type" content="website">
-<link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
-<link rel="stylesheet" href="assets/css/style.css">
+<meta property="og:locale" content="zh_TW">
+<link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/zh/ai.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://neil289506-commits.github.io/MCloudDebug/zh/ai.html"><link rel="alternate" hreflang="en" href="https://neil289506-commits.github.io/MCloudDebug/en/ai.html"><link rel="alternate" hreflang="ja" href="https://neil289506-commits.github.io/MCloudDebug/ja/ai.html"><link rel="alternate" hreflang="x-default" href="https://neil289506-commits.github.io/MCloudDebug/en/ai.html">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
 <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
 <header class="top"><div class="wrap bar">
-  <a class="brand" href="index.html"><img src="assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <a class="brand" href="index.html"><img src="../assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
   <nav id="nav"><a href="index.html">首頁</a><a href="features.html">功能</a><a href="guide.html">使用教學</a><a href="ai.html" class="on">AI 管道</a><a href="privacy.html">隱私與安全</a><a href="download.html">下載</a><a href="faq.html">FAQ</a></nav>
   <div class="tools">
+    <div class="lang" aria-label="Language"><a href="../zh/ai.html" hreflang="zh-Hant" class="on">中文</a><a href="../en/ai.html" hreflang="en">EN</a><a href="../ja/ai.html" hreflang="ja">日本語</a></div>
     <button id="theme" class="icon" aria-label="切換深淺色" title="切換深淺色">🌓</button>
-    <button id="menu" class="icon only-m" aria-label="選單" aria-expanded="false">☰</button>
+    <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
   </div>
 </div></header>
 <section class="phead"><div class="wrap"><h1>AI 管道</h1><p>Groq、本地 LLM、GitHub Models 三條路線的差異與設定。</p></div></section>
@@ -28,8 +32,8 @@
 <div class="tw"><table>
 <tr><th>管道</th><th>端點</th><th>認證</th><th>適合</th></tr>
 <tr><td><b>Groq</b></td><td><code>https://api.groq.com/openai/v1/chat/completions</code></td><td>API Key</td><td>想要快速回應</td></tr>
-<tr><td><b>本地 LLM</b></td><td><code>llama-server</code>（127.0.0.1 隨機埠）<code>/v1/chat/completions</code></td><td>無</td><td>資料不想離開電腦</td></tr>
-<tr><td><b>GitHub Models</b></td><td><code>https://models.github.ai/inference/chat/completions</code></td><td>Fine-grained PAT（<code>models: read</code>）</td><td>已有 GitHub 帳號</td></tr>
+<tr><td><b>本地 LLM</b></td><td><code>llama-server</code> (127.0.0.1 隨機埠) <code>/v1/chat/completions</code></td><td>無</td><td>資料不想離開電腦</td></tr>
+<tr><td><b>GitHub Models</b></td><td><code>https://models.github.ai/inference/chat/completions</code></td><td>Fine-grained PAT (<code>models: read</code>)</td><td>已有 GitHub 帳號</td></tr>
 </table></div>
 <h2>本地 LLM 細節</h2>
 <ul class="l">
@@ -39,7 +43,12 @@
 </ul>
 <h2>llama.cpp 如何下載</h2>
 <p><code>ggml-org/llama.cpp</code> 的 <code>releases/latest</code> 目前指向一個只含 <code>nightly-tag.txt</code> 的「指標 release」，真正版本寫在該檔內。程式流程如下：</p>
-<ol class="l"><li>HEAD <code>releases/latest</code>，取得指標標籤</li><li>下載 <code>nightly-tag.txt</code>，讀出真正版本</li><li>依硬體組出 Vulkan / CPU / CUDA 12.4 的 Windows zip（CUDA 另含 cudart）</li><li>用 PowerShell <code>Expand-Archive</code> 解壓</li></ol>
+<ol class="l">
+ <li>HEAD <code>releases/latest</code>，取得指標標籤</li>
+ <li>下載 <code>nightly-tag.txt</code>，讀出真正版本</li>
+ <li>依硬體組出 Vulkan / CPU / CUDA 12.4 的 Windows zip（CUDA 另含 cudart）</li>
+ <li>用 PowerShell <code>Expand-Archive</code> 解壓</li>
+</ol>
 <p>若 <code>nightly-tag.txt</code> 不存在，會退回使用轉址標籤。</p>
 <h2>GitHub 管道其實是 GitHub Models</h2>
 <div class="note">PAT 可直接呼叫的公開推論 API 是 GitHub Models，不是 Copilot Chat。作者沒有找到可用 PAT 呼叫 Copilot Chat 的文件化公開端點，所以沒有假裝實作。模型清單來自 <code>models.github.ai/catalog/models</code>。</div>
@@ -49,5 +58,5 @@
   <div class="fl"><a href="index.html">首頁</a><a href="features.html">功能</a><a href="guide.html">使用教學</a><a href="ai.html">AI 管道</a><a href="privacy.html">隱私與安全</a><a href="download.html">下載</a><a href="faq.html">FAQ</a><a href="build.html">自行建置</a><a href="license.html">授權</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
   <p>MC Debugger — PolyForm Shield 1.0.0。非 Mojang / Microsoft 官方產品。</p>
 </div></footer>
-<script src="assets/js/main.js" defer></script>
+<script src="../assets/js/main.js" defer></script>
 </body></html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIプロバイダー · MC Debugger</title>
+<meta name="description" content="Groq・ローカルLLM・GitHub Models の違いと設定方法。">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="AIプロバイダー · MC Debugger">
+<meta property="og:description" content="Groq・ローカルLLM・GitHub Models の違いと設定方法。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/ja/ai.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://neil289506-commits.github.io/MCloudDebug/zh/ai.html"><link rel="alternate" hreflang="en" href="https://neil289506-commits.github.io/MCloudDebug/en/ai.html"><link rel="alternate" hreflang="ja" href="https://neil289506-commits.github.io/MCloudDebug/ja/ai.html"><link rel="alternate" hreflang="x-default" href="https://neil289506-commits.github.io/MCloudDebug/en/ai.html">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="../assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html">ホーム</a><a href="features.html">機能</a><a href="guide.html">使い方</a><a href="ai.html" class="on">AIプロバイダー</a><a href="privacy.html">プライバシーと安全性</a><a href="download.html">ダウンロード</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <div class="lang" aria-label="Language"><a href="../zh/ai.html" hreflang="zh-Hant">中文</a><a href="../en/ai.html" hreflang="en">EN</a><a href="../ja/ai.html" hreflang="ja" class="on">日本語</a></div>
+    <button id="theme" class="icon" aria-label="テーマ切替" title="テーマ切替">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="phead"><div class="wrap"><h1>AIプロバイダー</h1><p>Groq・ローカルLLM・GitHub Models の違いと設定方法。</p></div></section>
+<main class="wrap">
+
+<div class="tw"><table>
+<tr><th>プロバイダー</th><th>エンドポイント</th><th>認証</th><th>向いている用途</th></tr>
+<tr><td><b>Groq</b></td><td><code>https://api.groq.com/openai/v1/chat/completions</code></td><td>API Key</td><td>素早い応答</td></tr>
+<tr><td><b>ローカルLLM</b></td><td><code>llama-server</code> (127.0.0.1・ランダムポート) <code>/v1/chat/completions</code></td><td>なし</td><td>データを PC から出したくない</td></tr>
+<tr><td><b>GitHub Models</b></td><td><code>https://models.github.ai/inference/chat/completions</code></td><td>Fine-grained PAT (<code>models: read</code>)</td><td>GitHub アカウントがある</td></tr>
+</table></div>
+<h2>ローカルLLMの詳細</h2>
+<ul class="l">
+ <li>既定のモデルは <code>empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF</code>（9B 推論モデル、Q4_K_M 推奨）。別のモデルを使う場合は「設定 → ローカルLLM → 詳細」でダウンロード URL を変更します。</li>
+ <li>モデルは回答前に <code>&lt;think&gt;…&lt;/think&gt;</code> を出力しますが、アプリが非表示にします（<code>&lt;/think&gt;</code> のみの場合にも対応）。</li>
+ <li>サンプリングはモデルカードの推奨値：temperature 0.6、top_p 0.95。</li>
+</ul>
+<h2>llama.cpp のダウンロード方法</h2>
+<p><code>ggml-org/llama.cpp</code> の <code>releases/latest</code> は現在、<code>nightly-tag.txt</code> だけを含む「ポインタ release」を指しており、実際のバージョンはそのファイルに書かれています。アプリの処理は次のとおりです：</p>
+<ol class="l">
+ <li><code>releases/latest</code> に HEAD リクエストしてポインタのタグを取得</li>
+ <li><code>nightly-tag.txt</code> をダウンロードして実際のバージョンを読む</li>
+ <li>ハードウェアに応じて Vulkan / CPU / CUDA 12.4 の Windows zip 名を組み立てる（CUDA は cudart も取得）</li>
+ <li>PowerShell の <code>Expand-Archive</code> で解凍</li>
+</ol>
+<p><code>nightly-tag.txt</code> が存在しない場合は、リダイレクト先のタグにフォールバックします。</p>
+<h2>GitHub ルートの実体は GitHub Models</h2>
+<div class="note">PAT で呼び出せる公開推論 API は GitHub Models であり、Copilot Chat ではありません。PAT で Copilot Chat を呼べるドキュメント化された公開エンドポイントは見つからなかったため、実装を装ってはいません。モデル一覧は <code>models.github.ai/catalog/models</code> から取得します。</div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">ホーム</a><a href="features.html">機能</a><a href="guide.html">使い方</a><a href="ai.html">AIプロバイダー</a><a href="privacy.html">プライバシーと安全性</a><a href="download.html">ダウンロード</a><a href="faq.html">FAQ</a><a href="build.html">ビルド</a><a href="license.html">ライセンス</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0。Mojang / Microsoft の公式製品ではありません。</p>
+</div></footer>
+<script src="../assets/js/main.js" defer></script>
+</body></html>

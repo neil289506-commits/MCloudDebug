@@ -1,17 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 200" role="img" aria-label="流程：選實例、讀取 log、整理、遮蔽、預覽、交給 AI">
-<style>
-.b{fill:var(--card,#18222d);stroke:var(--line,#2a3948);stroke-width:1.5}
-.t{fill:var(--fg,#e8eef5);font:600 15px system-ui,"Noto Sans TC",sans-serif;text-anchor:middle}
-.s{fill:var(--mut,#8da0b5);font:12px system-ui,"Noto Sans TC",sans-serif;text-anchor:middle}
-.a{stroke:var(--acc,#4ade80);stroke-width:2;fill:none;marker-end:url(#m)}
-.n{fill:var(--acc,#4ade80);font:700 12px system-ui;text-anchor:middle}
-</style>
-<defs><marker id="m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--acc,#4ade80)"/></marker></defs>
-<g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 200" role="img">
+<style>.b{fill:#141d27;stroke:#2a3948;stroke-width:1.5}.t{fill:#e8eef5;font:600 13px system-ui,"Noto Sans TC","Noto Sans JP",sans-serif;text-anchor:middle}.s{fill:#8da0b5;font:10.5px system-ui,"Noto Sans TC","Noto Sans JP",sans-serif;text-anchor:middle}.a{stroke:#4ade80;stroke-width:2;fill:none;marker-end:url(#m)}.n{fill:#4ade80;font:700 12px system-ui;text-anchor:middle}</style>
+<defs><marker id="m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#4ade80"/></marker></defs>
 <rect class="b" x="8" y="50" width="124" height="100" rx="14"/><text class="n" x="70" y="76">1</text><text class="t" x="70" y="102">選實例</text><text class="s" x="70" y="124">找到遊戲資料夾</text>
 <rect class="b" x="186" y="50" width="124" height="100" rx="14"/><text class="n" x="248" y="76">2</text><text class="t" x="248" y="102">讀取 Log</text><text class="s" x="248" y="124">latest.log＋崩潰報告</text>
 <rect class="b" x="364" y="50" width="124" height="100" rx="14"/><text class="n" x="426" y="76">3</text><text class="t" x="426" y="102">整理</text><text class="s" x="426" y="124">去雜訊、合併重複</text>
 <rect class="b" x="542" y="50" width="124" height="100" rx="14"/><text class="n" x="604" y="76">4</text><text class="t" x="604" y="102">遮蔽＋預覽</text><text class="s" x="604" y="124">送出前自己確認</text>
 <rect class="b" x="720" y="50" width="152" height="100" rx="14"/><text class="n" x="796" y="76">5</text><text class="t" x="796" y="102">交給 AI</text><text class="s" x="796" y="124">Groq / 本地 / GitHub</text>
-<path class="a" d="M134 100H182"/><path class="a" d="M312 100H360"/><path class="a" d="M490 100H538"/><path class="a" d="M668 100H716"/>
-</g></svg>
+<path class="a" d="M134 100H182"/><path class="a" d="M312 100H360"/><path class="a" d="M490 100H538"/><path class="a" d="M668 100H716"/></svg>

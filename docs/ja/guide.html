@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>使い方 · MC Debugger</title>
+<meta name="description" content="5 ステップ：インスタンス選択、プロバイダー選択、プレビュー、送信。">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="使い方 · MC Debugger">
+<meta property="og:description" content="5 ステップ：インスタンス選択、プロバイダー選択、プレビュー、送信。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/ja/guide.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://neil289506-commits.github.io/MCloudDebug/zh/guide.html"><link rel="alternate" hreflang="en" href="https://neil289506-commits.github.io/MCloudDebug/en/guide.html"><link rel="alternate" hreflang="ja" href="https://neil289506-commits.github.io/MCloudDebug/ja/guide.html"><link rel="alternate" hreflang="x-default" href="https://neil289506-commits.github.io/MCloudDebug/en/guide.html">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="../assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html">ホーム</a><a href="features.html">機能</a><a href="guide.html" class="on">使い方</a><a href="ai.html">AIプロバイダー</a><a href="privacy.html">プライバシーと安全性</a><a href="download.html">ダウンロード</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <div class="lang" aria-label="Language"><a href="../zh/guide.html" hreflang="zh-Hant">中文</a><a href="../en/guide.html" hreflang="en">EN</a><a href="../ja/guide.html" hreflang="ja" class="on">日本語</a></div>
+    <button id="theme" class="icon" aria-label="テーマ切替" title="テーマ切替">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="phead"><div class="wrap"><h1>使い方</h1><p>5 ステップ：インスタンス選択、プロバイダー選択、プレビュー、送信。</p></div></section>
+<main class="wrap">
+
+<ol class="steps">
+ <li><h3>アプリを入手</h3><p><a href="download.html">ダウンロードページ</a>から Windows 版を入手して解凍し、<code>MCDebugger.exe</code> を実行します。</p></li>
+ <li><h3>Minecraft インスタンスを選択</h3><p>問題のあるインスタンスを選ぶと、<code>latest.log</code> を読み込み、最新のクラッシュ報告も探します。</p></li>
+ <li><h3>AIプロバイダーを選ぶ</h3><p>設定で Groq・ローカルLLM・GitHub のいずれかを選び、認証情報を入力します。違いは <a href="ai.html">AIプロバイダー</a> を参照してください。</p></li>
+ <li><h3>プレビューを確認</h3><p>整理結果とマスクに問題がないことを確認してから次へ進みます。</p></li>
+ <li><h3>送信して診断を読む</h3><p>AI が整理後のログから考えられる原因と対処方針を返します。あくまで参考として、元のログと照らし合わせてください。</p></li>
+</ol>
+<h2>プロバイダーごとの準備</h2>
+<div class="grid">
+ <div class="card"><h3>Groq</h3><p>API キーを作成して設定に貼り付けます。キーは DPAPI で暗号化して保存されます。</p></div>
+ <div class="card"><h3>GitHub Models</h3><p>Fine-grained PAT を作成：Account permissions → Models → Read-only（<code>models: read</code>）。</p></div>
+ <div class="card"><h3>ローカルLLM</h3><p>設定から llama.cpp とモデルをダウンロードします。Q4_K_M は約 5.24 GiB なので、ディスクとメモリに余裕を持たせてください。</p></div>
+</div>
+<div class="note"><b>ヒント：</b>PAT の URL 事前入力機能は 2026-05 に GitHub のドキュメントから削除されたため、リンクで項目が自動入力されない場合があります。上記の手動手順で設定してください。</div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">ホーム</a><a href="features.html">機能</a><a href="guide.html">使い方</a><a href="ai.html">AIプロバイダー</a><a href="privacy.html">プライバシーと安全性</a><a href="download.html">ダウンロード</a><a href="faq.html">FAQ</a><a href="build.html">ビルド</a><a href="license.html">ライセンス</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0。Mojang / Microsoft の公式製品ではありません。</p>
+</div></footer>
+<script src="../assets/js/main.js" defer></script>
+</body></html>

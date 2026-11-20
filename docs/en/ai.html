@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Providers · MC Debugger</title>
+<meta name="description" content="Differences and setup for Groq, local LLM and GitHub Models.">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="AI Providers · MC Debugger">
+<meta property="og:description" content="Differences and setup for Groq, local LLM and GitHub Models.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/en/ai.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://neil289506-commits.github.io/MCloudDebug/zh/ai.html"><link rel="alternate" hreflang="en" href="https://neil289506-commits.github.io/MCloudDebug/en/ai.html"><link rel="alternate" hreflang="ja" href="https://neil289506-commits.github.io/MCloudDebug/ja/ai.html"><link rel="alternate" hreflang="x-default" href="https://neil289506-commits.github.io/MCloudDebug/en/ai.html">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="../assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html">Home</a><a href="features.html">Features</a><a href="guide.html">Guide</a><a href="ai.html" class="on">AI Providers</a><a href="privacy.html">Privacy & Security</a><a href="download.html">Download</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <div class="lang" aria-label="Language"><a href="../zh/ai.html" hreflang="zh-Hant">中文</a><a href="../en/ai.html" hreflang="en" class="on">EN</a><a href="../ja/ai.html" hreflang="ja">日本語</a></div>
+    <button id="theme" class="icon" aria-label="Toggle theme" title="Toggle theme">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="phead"><div class="wrap"><h1>AI Providers</h1><p>Differences and setup for Groq, local LLM and GitHub Models.</p></div></section>
+<main class="wrap">
+
+<div class="tw"><table>
+<tr><th>Provider</th><th>Endpoint</th><th>Auth</th><th>Best for</th></tr>
+<tr><td><b>Groq</b></td><td><code>https://api.groq.com/openai/v1/chat/completions</code></td><td>API Key</td><td>Fast responses</td></tr>
+<tr><td><b>Local LLM</b></td><td><code>llama-server</code> (127.0.0.1, random port) <code>/v1/chat/completions</code></td><td>None</td><td>Keeping data on your PC</td></tr>
+<tr><td><b>GitHub Models</b></td><td><code>https://models.github.ai/inference/chat/completions</code></td><td>Fine-grained PAT (<code>models: read</code>)</td><td>You already use GitHub</td></tr>
+</table></div>
+<h2>Local LLM details</h2>
+<ul class="l">
+ <li>The default model is <code>empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF</code> (9B reasoning model, Q4_K_M recommended). To use another model, change the download URL under Settings → Local LLM → Advanced.</li>
+ <li>The model emits <code>&lt;think&gt;…&lt;/think&gt;</code> before answering; the app hides it and also handles the case where only <code>&lt;/think&gt;</code> appears.</li>
+ <li>Sampling follows the model card: temperature 0.6, top_p 0.95.</li>
+</ul>
+<h2>How llama.cpp is downloaded</h2>
+<p>The <code>releases/latest</code> of <code>ggml-org/llama.cpp</code> currently points to a "pointer release" containing only <code>nightly-tag.txt</code>; the real version is inside that file. The app does the following:</p>
+<ol class="l">
+ <li>HEAD <code>releases/latest</code> to get the pointer tag</li>
+ <li>Download <code>nightly-tag.txt</code> and read the real version</li>
+ <li>Build the Windows zip name for Vulkan / CPU / CUDA 12.4 (CUDA also pulls cudart)</li>
+ <li>Extract with PowerShell <code>Expand-Archive</code></li>
+</ol>
+<p>If <code>nightly-tag.txt</code> is missing, it falls back to the redirect tag.</p>
+<h2>The GitHub route is GitHub Models</h2>
+<div class="note">The public inference API reachable with a PAT is GitHub Models, not Copilot Chat. The author found no documented public endpoint for calling Copilot Chat with a PAT, so it is not faked. The model list comes from <code>models.github.ai/catalog/models</code>.</div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">Home</a><a href="features.html">Features</a><a href="guide.html">Guide</a><a href="ai.html">AI Providers</a><a href="privacy.html">Privacy & Security</a><a href="download.html">Download</a><a href="faq.html">FAQ</a><a href="build.html">Build</a><a href="license.html">License</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0. Not an official Mojang / Microsoft product.</p>
+</div></footer>
+<script src="../assets/js/main.js" defer></script>
+</body></html>

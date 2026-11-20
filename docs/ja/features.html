@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>機能 · MC Debugger</title>
+<meta name="description" content="ログ整理・クラッシュ報告抽出・マスクの詳細ルール。">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="機能 · MC Debugger">
+<meta property="og:description" content="ログ整理・クラッシュ報告抽出・マスクの詳細ルール。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/ja/features.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://neil289506-commits.github.io/MCloudDebug/zh/features.html"><link rel="alternate" hreflang="en" href="https://neil289506-commits.github.io/MCloudDebug/en/features.html"><link rel="alternate" hreflang="ja" href="https://neil289506-commits.github.io/MCloudDebug/ja/features.html"><link rel="alternate" hreflang="x-default" href="https://neil289506-commits.github.io/MCloudDebug/en/features.html">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="../assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html">ホーム</a><a href="features.html" class="on">機能</a><a href="guide.html">使い方</a><a href="ai.html">AIプロバイダー</a><a href="privacy.html">プライバシーと安全性</a><a href="download.html">ダウンロード</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <div class="lang" aria-label="Language"><a href="../zh/features.html" hreflang="zh-Hant">中文</a><a href="../en/features.html" hreflang="en">EN</a><a href="../ja/features.html" hreflang="ja" class="on">日本語</a></div>
+    <button id="theme" class="icon" aria-label="テーマ切替" title="テーマ切替">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="phead"><div class="wrap"><h1>機能</h1><p>ログ整理・クラッシュ報告抽出・マスクの詳細ルール。</p></div></section>
+<main class="wrap">
+
+<div class="toc"><a href="#clean">ログ整理</a><a href="#crash">クラッシュ報告</a><a href="#mask">マスク</a><a href="#mods">Mod 一覧</a></div>
+<h2 id="clean">ログ整理の方針</h2>
+<p>vanilla・Forge・Fabric のヘッダー形式を解析し、ヘッダーのない行は直前のエントリの続き（スタックトレース）として扱います。</p>
+<div class="two">
+  <div class="card"><h3>✅ 残すもの</h3><ul class="l keep">
+    <li>ERROR / FATAL（最優先）</li><li>WARN</li>
+    <li>キーワードを含む INFO</li>
+    <li>先頭 12 件（環境情報）</li>
+    <li>末尾 12 件（クラッシュ直前の動作）</li>
+    <li>各エラーの直前 3 件のコンテキスト</li></ul></div>
+  <div class="card"><h3>🗑 除去・圧縮するもの</h3><ul class="l drop">
+    <li>DEBUG / TRACE</li>
+    <li>既知の INFO ノイズ（リソース再読込、サウンド初期化、チャット…）</li>
+    <li>同一メッセージ（数値正規化後）は (×N) に統合</li>
+    <li>スタックは最大 12 フレーム、残りは折りたたみ</li></ul></div>
+</div>
+<p>文字数上限を超えると優先度の低いものから削除し、ERROR / FATAL は最後まで残します。既定は 14,000 文字（約 4〜5k トークン）。Groq 無料枠や GitHub Models は 1 回あたりのトークン制限が小さいためです。</p>
+<h2 id="crash">クラッシュ報告の抽出</h2>
+<div class="grid">
+  <div class="card"><h3><code>crash-reports/</code></h3><p>最新のレポートから、メインスタック、Head、System Details の要点、Suspected Mods を抽出します。</p></div>
+  <div class="card"><h3><code>hs_err_pid*.log</code></h3><p>JVM ネイティブクラッシュ：<code>#</code> の要約とネイティブスタックを保持します。</p></div>
+</div>
+<h2 id="mods">Mod 一覧</h2>
+<p>Fabric / Quilt の <code>Loading N mods:</code> は 1 行に圧縮します。Forge / NeoForge の latest.log には通常 Mod 一覧が含まれないため、crash-report があれば <code>Mod List:</code> から補完を試みます。</p>
+<h2 id="mask">個人情報のマスク</h2>
+<div class="tw"><table>
+<tr><th>種類</th><th>処理</th></tr>
+<tr><td>Windows / Unix のユーザーディレクトリ</td><td>マスク</td></tr>
+<tr><td>accessToken, Session ID</td><td>マスク</td></tr>
+<tr><td><code>Setting user:</code> 後のプレイヤー名</td><td>マスク</td></tr>
+<tr><td>UUID</td><td>マスク</td></tr>
+<tr><td><code>IP:Port</code></td><td>マスク</td></tr>
+</table></div>
+<div class="warn"><b>完全な匿名化は保証できません。</b>送信前に必ずプレビューを確認してください。</div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">ホーム</a><a href="features.html">機能</a><a href="guide.html">使い方</a><a href="ai.html">AIプロバイダー</a><a href="privacy.html">プライバシーと安全性</a><a href="download.html">ダウンロード</a><a href="faq.html">FAQ</a><a href="build.html">ビルド</a><a href="license.html">ライセンス</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0。Mojang / Microsoft の公式製品ではありません。</p>
+</div></footer>
+<script src="../assets/js/main.js" defer></script>
+</body></html>

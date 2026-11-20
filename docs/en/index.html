@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minecraft crash diagnosis tool · MC Debugger</title>
+<meta name="description" content="Clean latest.log, mask personal data and let AI find why Minecraft crashed.">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="Minecraft crash diagnosis tool · MC Debugger">
+<meta property="og:description" content="Clean latest.log, mask personal data and let AI find why Minecraft crashed.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/en/index.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://neil289506-commits.github.io/MCloudDebug/zh/index.html"><link rel="alternate" hreflang="en" href="https://neil289506-commits.github.io/MCloudDebug/en/index.html"><link rel="alternate" hreflang="ja" href="https://neil289506-commits.github.io/MCloudDebug/ja/index.html"><link rel="alternate" hreflang="x-default" href="https://neil289506-commits.github.io/MCloudDebug/en/index.html">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="../assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html" class="on">Home</a><a href="features.html">Features</a><a href="guide.html">Guide</a><a href="ai.html">AI Providers</a><a href="privacy.html">Privacy & Security</a><a href="download.html">Download</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <div class="lang" aria-label="Language"><a href="../zh/index.html" hreflang="zh-Hant">中文</a><a href="../en/index.html" hreflang="en" class="on">EN</a><a href="../ja/index.html" hreflang="ja">日本語</a></div>
+    <button id="theme" class="icon" aria-label="Toggle theme" title="Toggle theme">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="hero"><div class="wrap">
+  <img class="lg" src="../assets/img/logo.svg" alt="MC Debugger">
+  <h1>Minecraft crashed?<br><span class="grad">Let AI read the log</span></h1>
+  <p class="lead">Pick an instance, auto-clean <code>latest.log</code>, mask personal data, then hand it to Groq, a local LLM or GitHub Models.</p>
+  <a class="btn p" href="https://github.com/neil289506-commits/MCloudDebug/releases/latest/download/MCloudDebug-Windows-AMD64.zip">⬇ Download for Windows</a><a class="btn" href="https://github.com/neil289506-commits/MCloudDebug">Source</a>
+  <div class="badges"><span class="badge">Qt 6 Widgets</span><span class="badge">Windows</span><span class="badge">DPAPI-encrypted keys</span><span class="badge">PolyForm Shield 1.0.0</span></div>
+</div></section>
+<main class="wrap">
+
+<div class="stats">
+  <div class="stat"><b class="grad">3</b><span>AI providers</span></div>
+  <div class="stat"><b class="grad">14,000</b><span>Default character cap</span></div>
+  <div class="stat"><b class="grad">3</b><span>vanilla / Forge / Fabric headers</span></div>
+  <div class="stat"><b class="grad">0</b><span>Extra libraries (Qt Widgets + Network only)</span></div>
+</div>
+<h2>How it works</h2>
+<div class="diagram reveal"><img src="../assets/img/pipeline-en.svg" alt="Workflow diagram"></div>
+<h2>Why use it</h2>
+<div class="grid g2">
+  <div class="card reveal"><div class="ico">🧹</div><h3>Clean first, then send</h3><p>Drops DEBUG and known noise, merges repeats into (×N) and folds long stacks — saving tokens and keeping the signal.</p></div>
+  <div class="card reveal"><div class="ico">🔒</div><h3>Privacy by default</h3><p>User directories, accessToken, player name, UUIDs and IP:Port are masked, and you can preview everything before sending.</p></div>
+  <div class="card reveal"><div class="ico">🧠</div><h3>Three AI routes</h3><p>Cloud Groq, fully offline llama.cpp, or GitHub Models via a GitHub PAT.</p></div>
+  <div class="card reveal"><div class="ico">📄</div><h3>More than latest.log</h3><p>Also extracts the newest crash report and hs_err_pid native crash logs, including the main stack and suspected mods.</p></div>
+</div>
+<div class="cta reveal"><h2>Get started</h2><p>Unzip and run — no extra runtime to install.</p><a class="btn p" href="guide.html">Read the guide</a><a class="btn" href="faq.html">FAQ</a></div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">Home</a><a href="features.html">Features</a><a href="guide.html">Guide</a><a href="ai.html">AI Providers</a><a href="privacy.html">Privacy & Security</a><a href="download.html">Download</a><a href="faq.html">FAQ</a><a href="build.html">Build</a><a href="license.html">License</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0. Not an official Mojang / Microsoft product.</p>
+</div></footer>
+<script src="../assets/js/main.js" defer></script>
+</body></html>

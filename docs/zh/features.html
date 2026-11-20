@@ -9,17 +9,21 @@
 <meta property="og:title" content="功能 · MC Debugger">
 <meta property="og:description" content="Log 整理、崩潰報告萃取與個資遮蔽的完整規則。">
 <meta property="og:type" content="website">
-<link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
-<link rel="stylesheet" href="assets/css/style.css">
+<meta property="og:locale" content="zh_TW">
+<link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/zh/features.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://neil289506-commits.github.io/MCloudDebug/zh/features.html"><link rel="alternate" hreflang="en" href="https://neil289506-commits.github.io/MCloudDebug/en/features.html"><link rel="alternate" hreflang="ja" href="https://neil289506-commits.github.io/MCloudDebug/ja/features.html"><link rel="alternate" hreflang="x-default" href="https://neil289506-commits.github.io/MCloudDebug/en/features.html">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
 <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
 <header class="top"><div class="wrap bar">
-  <a class="brand" href="index.html"><img src="assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <a class="brand" href="index.html"><img src="../assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
   <nav id="nav"><a href="index.html">首頁</a><a href="features.html" class="on">功能</a><a href="guide.html">使用教學</a><a href="ai.html">AI 管道</a><a href="privacy.html">隱私與安全</a><a href="download.html">下載</a><a href="faq.html">FAQ</a></nav>
   <div class="tools">
+    <div class="lang" aria-label="Language"><a href="../zh/features.html" hreflang="zh-Hant" class="on">中文</a><a href="../en/features.html" hreflang="en">EN</a><a href="../ja/features.html" hreflang="ja">日本語</a></div>
     <button id="theme" class="icon" aria-label="切換深淺色" title="切換深淺色">🌓</button>
-    <button id="menu" class="icon only-m" aria-label="選單" aria-expanded="false">☰</button>
+    <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
   </div>
 </div></header>
 <section class="phead"><div class="wrap"><h1>功能</h1><p>Log 整理、崩潰報告萃取與個資遮蔽的完整規則。</p></div></section>
@@ -29,8 +33,17 @@
 <h2 id="clean">Log 整理策略</h2>
 <p>整理器會解析 vanilla、Forge、Fabric 三種標頭格式；沒有標頭的行視為前一筆訊息的延續（也就是堆疊追蹤）。</p>
 <div class="two">
-  <div class="card"><h3>✅ 保留</h3><ul class="l keep"><li>ERROR / FATAL（最高優先）</li><li>WARN</li><li>含關鍵字的 INFO</li><li>前 12 筆（環境資訊）</li><li>後 12 筆（崩潰前的動作）</li><li>每個錯誤之前的 3 筆上下文</li></ul></div>
-  <div class="card"><h3>🗑 丟棄 / 壓縮</h3><ul class="l drop"><li>DEBUG / TRACE</li><li>已知 INFO 雜訊（資源重載、音效初始化、聊天…）</li><li>相同訊息（數字正規化後）合併為 (×N)</li><li>每段堆疊最多 12 個 frame，其餘折疊</li></ul></div>
+  <div class="card"><h3>✅ 保留</h3><ul class="l keep">
+    <li>ERROR / FATAL（最高優先）</li><li>WARN</li>
+    <li>含關鍵字的 INFO</li>
+    <li>前 12 筆（環境資訊）</li>
+    <li>後 12 筆（崩潰前的動作）</li>
+    <li>每個錯誤之前的 3 筆上下文</li></ul></div>
+  <div class="card"><h3>🗑 丟棄 / 壓縮</h3><ul class="l drop">
+    <li>DEBUG / TRACE</li>
+    <li>已知 INFO 雜訊（資源重載、音效初始化、聊天…）</li>
+    <li>相同訊息（數字正規化後）合併為 (×N)</li>
+    <li>每段堆疊最多 12 個 frame，其餘折疊</li></ul></div>
 </div>
 <p>超出字元上限時，依優先級由低到高丟棄；ERROR / FATAL 最後才會動到。預設上限 14,000 字元（約 4–5k tokens），因為 Groq 免費層與 GitHub Models 的單次 token 限制較小。</p>
 <h2 id="crash">崩潰報告萃取</h2>
@@ -44,7 +57,7 @@
 <div class="tw"><table>
 <tr><th>類型</th><th>處理</th></tr>
 <tr><td>Windows / Unix 使用者目錄</td><td>遮蔽</td></tr>
-<tr><td>accessToken、Session ID</td><td>遮蔽</td></tr>
+<tr><td>accessToken, Session ID</td><td>遮蔽</td></tr>
 <tr><td><code>Setting user:</code> 後的玩家名</td><td>遮蔽</td></tr>
 <tr><td>UUID</td><td>遮蔽</td></tr>
 <tr><td><code>IP:Port</code></td><td>遮蔽</td></tr>
@@ -56,5 +69,5 @@
   <div class="fl"><a href="index.html">首頁</a><a href="features.html">功能</a><a href="guide.html">使用教學</a><a href="ai.html">AI 管道</a><a href="privacy.html">隱私與安全</a><a href="download.html">下載</a><a href="faq.html">FAQ</a><a href="build.html">自行建置</a><a href="license.html">授權</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
   <p>MC Debugger — PolyForm Shield 1.0.0。非 Mojang / Microsoft 官方產品。</p>
 </div></footer>
-<script src="assets/js/main.js" defer></script>
+<script src="../assets/js/main.js" defer></script>
 </body></html>

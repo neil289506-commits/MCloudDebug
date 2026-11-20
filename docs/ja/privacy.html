@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>プライバシーと安全性 · MC Debugger</title>
+<meta name="description" content="キーの暗号化方式、マスク範囲、ユーザー自身で確認すべきこと。">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="プライバシーと安全性 · MC Debugger">
+<meta property="og:description" content="キーの暗号化方式、マスク範囲、ユーザー自身で確認すべきこと。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/ja/privacy.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://neil289506-commits.github.io/MCloudDebug/zh/privacy.html"><link rel="alternate" hreflang="en" href="https://neil289506-commits.github.io/MCloudDebug/en/privacy.html"><link rel="alternate" hreflang="ja" href="https://neil289506-commits.github.io/MCloudDebug/ja/privacy.html"><link rel="alternate" hreflang="x-default" href="https://neil289506-commits.github.io/MCloudDebug/en/privacy.html">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="../assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html">ホーム</a><a href="features.html">機能</a><a href="guide.html">使い方</a><a href="ai.html">AIプロバイダー</a><a href="privacy.html" class="on">プライバシーと安全性</a><a href="download.html">ダウンロード</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <div class="lang" aria-label="Language"><a href="../zh/privacy.html" hreflang="zh-Hant">中文</a><a href="../en/privacy.html" hreflang="en">EN</a><a href="../ja/privacy.html" hreflang="ja" class="on">日本語</a></div>
+    <button id="theme" class="icon" aria-label="テーマ切替" title="テーマ切替">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="phead"><div class="wrap"><h1>プライバシーと安全性</h1><p>キーの暗号化方式、マスク範囲、ユーザー自身で確認すべきこと。</p></div></section>
+<main class="wrap">
+
+<h2>キーの保存方法</h2>
+<p>API キーと PAT は <b>Windows DPAPI</b>（<code>CryptProtectData</code> + アプリ固有の entropy）で暗号化され、暗号文（Base64）が <code>%APPDATA%\MCDebugger\settings.ini</code> に保存されます。復号できるのは同じ Windows アカウントのみです。</p>
+<div class="note"><b>Windows 以外では保存を拒否します</b>。平文へのフォールバックはしません。</div>
+<h2>送信される内容</h2>
+<ul class="l"><li>整理・マスク後のログ要約（既定上限 14,000 文字）</li><li>クラッシュ報告の要点</li><li>ローカルLLM選択時は、アプリと 127.0.0.1 の間でのみデータが流れます</li></ul>
+<h2>ユーザー側で行うこと</h2>
+<div class="warn"><b>マスクはルールベースで、完全な匿名化は保証できません。</b>サーバーアドレス、独自パス、チャット内容などが残る可能性があります。送信前にプレビューを確認してください。</div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">ホーム</a><a href="features.html">機能</a><a href="guide.html">使い方</a><a href="ai.html">AIプロバイダー</a><a href="privacy.html">プライバシーと安全性</a><a href="download.html">ダウンロード</a><a href="faq.html">FAQ</a><a href="build.html">ビルド</a><a href="license.html">ライセンス</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0。Mojang / Microsoft の公式製品ではありません。</p>
+</div></footer>
+<script src="../assets/js/main.js" defer></script>
+</body></html>
