@@ -30,13 +30,20 @@ jobs:
         with:
           python-version: '3.12'
 
-      # 診斷：列出 aqtinstall 實際提供的 Qt 6.11.2 架構（Install Qt 失敗時看這一步的輸出）
-      - name: Check Qt availability
+      # 診斷：把 aqtinstall 的輸出寫成註解（Annotations），Install Qt 失敗時可從 PR 的 Checks 頁面讀到原因
+      - name: Diagnose Qt install
         shell: pwsh
         continue-on-error: true
         run: |
           python -m pip install --quiet aqtinstall
-          python -m aqt list-qt windows desktop --arch $env:QT_VERSION
+          function Emit($title, $lines) {
+            $one = (($lines | ForEach-Object { "$_" }) -join " | ")
+            if ($one.Length -gt 1400) { $one = $one.Substring($one.Length - 1400) }
+            Write-Host "::notice title=$title::$one"
+          }
+          Emit "aqt versions" (python -m aqt list-qt windows desktop 2>&1 | Select-Object -Last 6)
+          Emit "aqt archs $env:QT_VERSION" (python -m aqt list-qt windows desktop --arch $env:QT_VERSION 2>&1)
+          Emit "aqt install" (python -m aqt install-qt windows desktop $env:QT_VERSION $env:QT_ARCH -O C:\Qt-diag 2>&1 | Select-Object -Last 15)
 
       - name: Install Qt ${{ env.QT_VERSION }}
         uses: jurplel/install-qt-action@v4
