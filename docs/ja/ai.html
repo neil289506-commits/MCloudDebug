@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AIプロバイダー · MC Debugger</title>
-<meta name="description" content="Groq・ローカルLLM・GitHub Models の違いと設定方法。">
+<meta name="description" content="Groq・ローカルLLM・GitHub Copilot の違いと設定方法。">
 <meta name="theme-color" content="#0b1118">
 <meta property="og:title" content="AIプロバイダー · MC Debugger">
-<meta property="og:description" content="Groq・ローカルLLM・GitHub Models の違いと設定方法。">
+<meta property="og:description" content="Groq・ローカルLLM・GitHub Copilot の違いと設定方法。">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ja_JP">
 <link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/ja/ai.html">
@@ -26,14 +26,14 @@
     <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
   </div>
 </div></header>
-<section class="phead"><div class="wrap"><h1>AIプロバイダー</h1><p>Groq・ローカルLLM・GitHub Models の違いと設定方法。</p></div></section>
+<section class="phead"><div class="wrap"><h1>AIプロバイダー</h1><p>Groq・ローカルLLM・GitHub Copilot の違いと設定方法。</p></div></section>
 <main class="wrap">
 
 <div class="tw"><table>
 <tr><th>プロバイダー</th><th>エンドポイント</th><th>認証</th><th>向いている用途</th></tr>
 <tr><td><b>Groq</b></td><td><code>https://api.groq.com/openai/v1/chat/completions</code></td><td>API Key</td><td>素早い応答</td></tr>
 <tr><td><b>ローカルLLM</b></td><td><code>llama-server</code> (127.0.0.1・ランダムポート) <code>/v1/chat/completions</code></td><td>なし</td><td>データを PC から出したくない</td></tr>
-<tr><td><b>GitHub Models</b></td><td><code>https://models.github.ai/inference/chat/completions</code></td><td>Fine-grained PAT (<code>models: read</code>)</td><td>GitHub アカウントがある</td></tr>
+<tr><td><b>GitHub Copilot</b></td><td>公式 <code>copilot</code> CLI（非対話 <code>-p</code>）</td><td>Copilot サブスクリプション（<code>copilot login</code> またはトークン）</td><td>すでに Copilot を使っている</td></tr>
 </table></div>
 <h2>ローカルLLMの詳細</h2>
 <ul class="l">
@@ -50,8 +50,10 @@
  <li>PowerShell の <code>Expand-Archive</code> で解凍</li>
 </ol>
 <p><code>nightly-tag.txt</code> が存在しない場合は、リダイレクト先のタグにフォールバックします。</p>
-<h2>GitHub ルートの実体は GitHub Models</h2>
-<div class="note">PAT で呼び出せる公開推論 API は GitHub Models であり、Copilot Chat ではありません。PAT で Copilot Chat を呼べるドキュメント化された公開エンドポイントは見つからなかったため、実装を装ってはいません。モデル一覧は <code>models.github.ai/catalog/models</code> から取得します。</div>
+<h2>GitHub ルートは GitHub Copilot（Copilot CLI 経由）</h2>
+<div class="note">以前の GitHub ルートが呼んでいた GitHub Models は 2026-07-30 に終了しました。現在は公式 <code>copilot</code> CLI を子プロセスとして実行します（インストール：<code>npm install -g @github/copilot</code>）。既定モデルは <code>auto</code>、shell とファイル書き込みツールは常に拒否します。設定のモデル ID 一覧は公式の表示名から導いたもので、<b>一つずつ検証してはいません</b>。任意の ID を入力でき、プランで使えるモデルは CLI 内の <code>/model</code> で確認してください。</div>
+<h2>プロンプトルール</h2>
+<p>設定 → プロンプトルール で、Groq と GitHub Copilot のシステムプロンプトに 3 つのルール（<b>Web を検索</b>、<b>推測しない（分からなければ分からないと言う）</b>、<b>深く考える</b>）を追加します。各ルールは無効にできます。検索ルールは、そのルートとモデルに実際に検索ツールがある場合だけ追加されます（Groq の <code>gpt-oss</code> 系は内蔵 <code>browser_search</code>、Copilot は Web アクセスを許可した場合）。Groq の既定モデルは <code>openai/gpt-oss-120b</code>（推論強度は高）です。</p>
 
 </main>
 <footer><div class="wrap">

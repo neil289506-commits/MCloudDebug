@@ -1,7 +1,7 @@
 # MC Debugger
 
 Minecraft 崩潰診斷工具（Qt 6.11.2 / MSVC 2022 / Windows）。
-選實例 → 整理 `latest.log`（刪雜訊、遮個資）→ 交給 AI（Groq / 本地 LLM / GitHub Models）。
+選實例 → 整理 `latest.log`（刪雜訊、遮個資）→ 交給 AI（Groq / 本地 LLM / GitHub Copilot）。
 
 ## 建置（Qt Creator）
 1. 開啟 `CMakeLists.txt`，Kit 選 **Desktop Qt 6.11.2 MSVC2022 64-bit**。
@@ -13,7 +13,7 @@ Minecraft 崩潰診斷工具（Qt 6.11.2 / MSVC 2022 / Windows）。
 |---|---|---|
 | Groq | `https://api.groq.com/openai/v1/chat/completions` | API Key |
 | 本地 LLM | `llama-server`（127.0.0.1 隨機埠）`/v1/chat/completions` | 無 |
-| GitHub | `https://models.github.ai/inference/chat/completions` | Fine-grained PAT，權限 `models: read` |
+| GitHub Copilot | 官方 `copilot` CLI（`copilot -p`，非互動） | 設定內「登入 GitHub」（`copilot login`）或 Token |
 
 ### 金鑰加密
 Windows DPAPI（`CryptProtectData` + 應用程式專屬 entropy），密文（Base64）存在 `%APPDATA%\MCDebugger\settings.ini`。
@@ -33,9 +33,8 @@ Windows DPAPI（`CryptProtectData` + 應用程式專屬 entropy），密文（Ba
 這四個網址都已實測回 HTTP 200。若 `nightly-tag.txt` 不存在則退回使用轉址標籤。
 解壓使用 Windows 內建 PowerShell `Expand-Archive`。
 
-**3. GitHub 管道實際上是 GitHub Models，不是 Copilot Chat**
-PAT 可用的公開推論 API 是 GitHub Models（需 `models: read`）。我沒有找到文件化的、可用 PAT 直接呼叫 Copilot Chat 的公開端點，所以沒有假裝實作。
-來源：https://docs.github.com/en/rest/models/inference
+**3. GitHub 管道改為 GitHub Copilot（透過官方 Copilot CLI）**
+原本的 GitHub Models 推論 API 已於 2026-07-30 退役。現在把 `copilot` CLI 當子行程執行（`npm install -g @github/copilot`），預設模型 `auto`，shell／寫檔工具一律封鎖；可在設定按「登入 GitHub」直接登入。Copilot 模型 ID 清單是依官方顯示名稱推導、未逐一驗證，可自行輸入任何 ID。
 
 **4. 預填 PAT 連結**
 參數 `name`、`description`、`expires_in`、`user_models=read`（Models 的帳號權限）取自 GitHub 文件的 URL 預填表。
@@ -51,13 +50,12 @@ PAT 可用的公開推論 API 是 GitHub Models（需 `models: read`）。我沒
 - 另外萃取 `crash-reports/` 最新報告（主堆疊、Head、System Details 重點、Suspected Mods）與 `hs_err_pid*.log`（`#` 摘要＋原生堆疊）。
 - Mod 清單：Fabric/Quilt 的 `Loading N mods:` 壓成一行。
 - 遮蔽：Windows/Unix 使用者目錄、accessToken/Session ID、`Setting user:` 玩家名、UUID、`IP:Port`。**無法保證完全匿名，送出前請看預覽。**
-- 預設上限 14,000 字元（約 4–5k tokens），因為 Groq 免費層與 GitHub Models 的單次 token 限制較小。
+- 預設上限 14,000 字元（約 4–5k tokens），因為 Groq 免費層的單次 token 限制較小。
 
 ## 已知限制
 - 沒有在真實 Windows + Qt 6.11.2 上執行過：我在 Linux（Qt 6.4.2）用 `-Wall -Wextra` 編譯，**零錯誤零警告**，並用模擬 Fabric 崩潰 log 驗證整理器（58 KB → 2 KB）、offscreen 啟動 UI。
   Windows 專屬路徑（DPAPI、PowerShell 解壓、`CREATE_NO_WINDOW`）已寫好但**只通過語法檢查，未實測**。
 - Forge/NeoForge 的 latest.log 通常不含完整 Mod 清單；有 crash-report 時會嘗試從 `Mod List:` 區段補。
-- GitHub Models 的模型 ID 清單由 `models.github.ai/catalog/models` 取得；回應格式我依文件假設為陣列或 `{data:[…]}`，並做了容錯。
 
 ## 授權
 本專案以 **PolyForm Shield License 1.0.0** 釋出（見 `LICENSE`）。
@@ -73,3 +71,10 @@ PAT 可用的公開推論 API 是 GitHub Models（需 `models: read`）。我沒
 - **Qwythos 模型**：由使用者從 Hugging Face 下載，不隨本專案散布；模型本身有自己的授權，使用前請閱讀模型卡。
 
 > 以上不是法律意見。
+
+
+## 提示詞規則與模型預設（Groq／GitHub Copilot）
+
+- 設定 → 提示詞規則：**搜尋網路**、**不要猜測（不知道就說不知道）**、**深度思考**，三條都可個別關閉；搜尋規則只在該管道＋模型真的有搜尋工具時才加入。
+- Groq 預設 `openai/gpt-oss-120b`、推理強度高、內建 `browser_search`；清單取自你的金鑰可用的所有聊天模型，可隨時改。
+- Copilot 預設模型 `auto`，可選其他模型、Auto 路由偏好與推理強度。

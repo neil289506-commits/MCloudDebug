@@ -19,6 +19,10 @@ set(SOURCES
     src/Downloader.cpp
     src/AiClient.h
     src/AiClient.cpp
+    src/CopilotClient.h
+    src/CopilotClient.cpp
+    src/ModelCatalog.h
+    src/PromptRules.h
     src/LlamaManager.h
     src/LlamaManager.cpp
     src/Theme.h

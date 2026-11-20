@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI 管道 · MC Debugger</title>
-<meta name="description" content="Groq、本地 LLM、GitHub Models 三條路線的差異與設定。">
+<meta name="description" content="Groq、本地 LLM、GitHub Copilot 三條路線的差異與設定。">
 <meta name="theme-color" content="#0b1118">
 <meta property="og:title" content="AI 管道 · MC Debugger">
-<meta property="og:description" content="Groq、本地 LLM、GitHub Models 三條路線的差異與設定。">
+<meta property="og:description" content="Groq、本地 LLM、GitHub Copilot 三條路線的差異與設定。">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/zh/ai.html">
@@ -26,14 +26,14 @@
     <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
   </div>
 </div></header>
-<section class="phead"><div class="wrap"><h1>AI 管道</h1><p>Groq、本地 LLM、GitHub Models 三條路線的差異與設定。</p></div></section>
+<section class="phead"><div class="wrap"><h1>AI 管道</h1><p>Groq、本地 LLM、GitHub Copilot 三條路線的差異與設定。</p></div></section>
 <main class="wrap">
 
 <div class="tw"><table>
 <tr><th>管道</th><th>端點</th><th>認證</th><th>適合</th></tr>
 <tr><td><b>Groq</b></td><td><code>https://api.groq.com/openai/v1/chat/completions</code></td><td>API Key</td><td>想要快速回應</td></tr>
 <tr><td><b>本地 LLM</b></td><td><code>llama-server</code> (127.0.0.1 隨機埠) <code>/v1/chat/completions</code></td><td>無</td><td>資料不想離開電腦</td></tr>
-<tr><td><b>GitHub Models</b></td><td><code>https://models.github.ai/inference/chat/completions</code></td><td>Fine-grained PAT (<code>models: read</code>)</td><td>已有 GitHub 帳號</td></tr>
+<tr><td><b>GitHub Copilot</b></td><td>官方 <code>copilot</code> CLI（非互動 <code>-p</code>）</td><td>Copilot 訂閱（<code>copilot login</code> 或 Token）</td><td>已有 Copilot</td></tr>
 </table></div>
 <h2>本地 LLM 細節</h2>
 <ul class="l">
@@ -50,8 +50,10 @@
  <li>用 PowerShell <code>Expand-Archive</code> 解壓</li>
 </ol>
 <p>若 <code>nightly-tag.txt</code> 不存在，會退回使用轉址標籤。</p>
-<h2>GitHub 管道其實是 GitHub Models</h2>
-<div class="note">PAT 可直接呼叫的公開推論 API 是 GitHub Models，不是 Copilot Chat。作者沒有找到可用 PAT 呼叫 Copilot Chat 的文件化公開端點，所以沒有假裝實作。模型清單來自 <code>models.github.ai/catalog/models</code>。</div>
+<h2>GitHub 管道是 GitHub Copilot（透過 Copilot CLI）</h2>
+<div class="note">舊的 GitHub 管道呼叫的是 GitHub Models，已於 2026-07-30 退役。現在改為把官方 <code>copilot</code> CLI 當子行程執行（安裝：<code>npm install -g @github/copilot</code>）。預設模型是 <code>auto</code>；shell 與寫檔工具一律封鎖。設定頁的模型 ID 清單是依官方顯示名稱推導的，<b>沒有逐一驗證</b>——可自行輸入任何 ID，並用 CLI 內的 <code>/model</code> 查看你的方案實際可用哪些。</div>
+<h2>提示詞規則</h2>
+<p>設定 → 提示詞規則 會在 Groq 與 GitHub Copilot 的系統提示詞加入三條規則：<b>搜尋網路</b>、<b>不要猜測（不知道就說不知道）</b>、<b>深度思考</b>，每條都能關掉。搜尋規則只有在該管道與模型真的有搜尋工具時才會加入（Groq 的 <code>gpt-oss</code> 系列走內建 <code>browser_search</code>；Copilot 需允許網路存取）。Groq 預設模型是 <code>openai/gpt-oss-120b</code>，推理強度為高。</p>
 
 </main>
 <footer><div class="wrap">

@@ -4,6 +4,7 @@
 #include "AiClient.h"
 #include "LlamaManager.h"
 
+class QCheckBox;
 class QComboBox;
 class QLabel;
 class QLineEdit;
@@ -17,29 +18,42 @@ class SettingsDialog : public QDialog
 public:
     SettingsDialog(LlamaManager *llama, QWidget *parent = nullptr);
 
-    static QUrl githubTokenPrefillUrl();
-
 private slots:
     void accept() override;
 
 private:
     QWidget *buildGroqTab();
     QWidget *buildLocalTab();
-    QWidget *buildGitHubTab();
+    QWidget *buildCopilotTab();
+    QWidget *buildRulesTab();
     void refreshLocalStatus();
-    void onModels(Provider p, const QStringList &ids);
+    void refreshCopilotStatus();
+    void fetchGroqModels(bool silent);
+    void onGroqModels(const QStringList &ids);
 
     LlamaManager *m_llama;
     AiClient *m_ai;
+    bool m_silentFetch = false;
 
+    // 提示詞規則
+    QCheckBox *m_ruleSearch = nullptr;
+    QCheckBox *m_ruleNoGuess = nullptr;
+    QCheckBox *m_ruleDeep = nullptr;
     // Groq
     QLineEdit *m_groqKey = nullptr;
     QComboBox *m_groqModel = nullptr;
+    QComboBox *m_groqReason = nullptr;
+    QCheckBox *m_groqSearch = nullptr;
     QLabel *m_groqKeyState = nullptr;
-    // GitHub
+    // GitHub Copilot
     QLineEdit *m_ghKey = nullptr;
-    QComboBox *m_ghModel = nullptr;
     QLabel *m_ghKeyState = nullptr;
+    QLineEdit *m_cliPath = nullptr;
+    QLabel *m_cliState = nullptr;
+    QComboBox *m_ghModel = nullptr;
+    QComboBox *m_ghTier = nullptr;
+    QComboBox *m_ghReason = nullptr;
+    QCheckBox *m_ghSearch = nullptr;
     // Local
     QLabel *m_srvState = nullptr;
     QLabel *m_modelState = nullptr;
