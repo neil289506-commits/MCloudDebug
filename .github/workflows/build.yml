@@ -1,0 +1,118 @@
+name: Build (Windows / Qt 6 / MSVC 2022)
+
+on:
+  push:
+    branches: [main, master]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+# 同一個分支有新提交時，取消舊的執行
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  QT_ARCH: 'win64_msvc2022_64'   # install-qt-action 文件：Qt >= 6.8 的 Windows 預設架構
+  APP_NAME: MCDebugger
+
+jobs:
+  build:
+    runs-on: windows-2022        # 內建 Visual Studio 2022 (MSVC 2022)
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      # runner 預設的最新 Python（3.15）讓 aqtinstall 安裝失敗（Run #1），所以固定使用 3.12
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # 實測（Run #5）：aqtinstall 3.3.0 目前抓不到整個 6.11.x 的 Updates.xml（版本有列出但無法下載），
+      # 6.8.3 / 6.10.3 則正常。所以依序嘗試，採用第一個「確實列得出 ${{ env.QT_ARCH }}」的版本：
+      # 6.11.x 可用時自動優先使用，否則退回 6.10.3。專案最低需求為 Qt 6.4，不受影響。
+      - name: Pick available Qt version
+        id: qt
+        shell: pwsh
+        run: |
+          python -m pip install --quiet aqtinstall
+          $picked = $null
+          $report = @()
+          foreach ($v in '6.11.2', '6.11.3', '6.11.1', '6.10.3') {
+            $out = (python -m aqt list-qt windows desktop --arch $v 2>&1 | Out-String)
+            if ($out -match [regex]::Escape($env:QT_ARCH)) { $picked = $v; $report += "$v=OK"; break }
+            $report += "$v=unavailable"
+          }
+          Write-Host "::notice title=Qt version::$($report -join ', ')"
+          if (-not $picked) { throw "Qt 6.11.x 在鏡像上都不可用：$($report -join ', ')" }
+          "version=$picked" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Install Qt ${{ steps.qt.outputs.version }}
+        uses: jurplel/install-qt-action@v4
+        with:
+          setup-python: false    # 使用上面固定的 Python 3.12
+          version: ${{ steps.qt.outputs.version }}
+          host: windows
+          target: desktop
+          arch: ${{ env.QT_ARCH }}
+          cache: true            # 快取 Qt 安裝，加速後續執行
+
+      - name: Configure
+        shell: pwsh
+        run: >
+          cmake -S . -B build
+          -G "Visual Studio 17 2022" -A x64
+          -DCMAKE_PREFIX_PATH="$env:QT_ROOT_DIR"
+
+      - name: Build (Release)
+        shell: pwsh
+        run: cmake --build build --config Release --parallel
+
+      - name: Deploy Qt runtime (windeployqt)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/$env:APP_NAME | Out-Null
+          Copy-Item "build/Release/$env:APP_NAME.exe" "dist/$env:APP_NAME/"
+          & "$env:QT_ROOT_DIR/bin/windeployqt.exe" --release --no-translations --compiler-runtime "dist/$env:APP_NAME/$env:APP_NAME.exe"
+          Copy-Item README.md "dist/$env:APP_NAME/"
+          Get-ChildItem "dist/$env:APP_NAME" | Select-Object Name, Length
+
+      - name: Smoke test (程式能啟動且不立刻崩潰)
+        shell: pwsh
+        run: |
+          $p = Start-Process "dist/$env:APP_NAME/$env:APP_NAME.exe" -PassThru
+          Start-Sleep -Seconds 5
+          if ($p.HasExited) { throw "程式在 5 秒內就結束了，結束代碼 $($p.ExitCode)" }
+          Stop-Process -Id $p.Id -Force
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $ver = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME } else { "dev-$($env:GITHUB_SHA.Substring(0,7))" }
+          $zip = "$env:APP_NAME-$ver-win64.zip"
+          Compress-Archive -Path "dist/$env:APP_NAME" -DestinationPath $zip
+          "ZIP_NAME=$zip" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ZIP_NAME }}
+          path: ${{ env.ZIP_NAME }}
+          if-no-files-found: error
+
+      # 只有推 v* 標籤時才建立 Release（需要寫入權限，所以放在獨立步驟並提升權限）
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.zip
+          generate_release_notes: true
