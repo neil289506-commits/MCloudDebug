@@ -5,6 +5,7 @@
 #include <QTimer>
 
 #include "AiClient.h"
+#include "CopilotClient.h"
 #include "LlamaManager.h"
 #include "LogCleaner.h"
 
@@ -48,7 +49,8 @@ private:
     void runAnalyze();
     void sendFollowUp();
     bool buildConfig(ProviderConfig *cfg);
-    QString systemPrompt() const;
+    QString systemPrompt(const ProviderConfig &cfg) const;
+    void dispatchSend();
     void setBusy(bool busy, const QString &msg = QString());
     void openSettings();
     void updateProviderChip();
@@ -61,6 +63,7 @@ private:
     QList<Instance> m_inst;
     LlamaManager *m_llama;
     AiClient *m_ai;
+    CopilotClient *m_copilot;
     QFileSystemWatcher m_watcher;
     QTimer m_watchDebounce;
     QTimer m_renderTimer;

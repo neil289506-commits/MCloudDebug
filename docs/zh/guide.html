@@ -39,7 +39,7 @@
 <h2>各管道的準備工作</h2>
 <div class="grid">
  <div class="card"><h3>Groq</h3><p>建立 API Key 後貼到設定。Key 會用 DPAPI 加密存放。</p></div>
- <div class="card"><h3>GitHub Models</h3><p>建立 Fine-grained PAT：Account permissions → Models → Read-only（<code>models: read</code>）。</p></div>
+ <div class="card"><h3>GitHub Copilot</h3><p>安裝 Copilot CLI（<code>npm install -g @github/copilot</code>）並執行 <code>copilot login</code>，或在設定貼上 Token。需要 Copilot 訂閱。</p></div>
  <div class="card"><h3>本地 LLM</h3><p>在設定中下載 llama.cpp 與模型。模型 Q4_K_M 約 5.24 GiB，請預留硬碟與記憶體。</p></div>
 </div>
 <div class="note"><b>提示：</b>預填 PAT 連結的功能已被 GitHub 在 2026-05 從文件移除，連結可能不會自動帶入欄位，請依上面的手動步驟設定。</div>

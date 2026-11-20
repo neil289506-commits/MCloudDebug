@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 
 #include "AppSettings.h"
+#include "ModelCatalog.h"
+#include "PromptRules.h"
 #include "SecureStore.h"
 #include "SettingsDialog.h"
 
@@ -70,7 +72,9 @@ QLabel *cardTitle(const QString &t)
 MainWindow::MainWindow()
     : m_llama(new LlamaManager(this))
     , m_ai(new AiClient(this))
+    , m_copilot(new CopilotClient(this))
 {
+    App::migrateAiSettings();
     setWindowTitle(tr("MC Debugger — Minecraft 崩潰診斷"));
     resize(1240, 800);
     setMinimumSize(980, 640);
@@ -86,9 +90,10 @@ MainWindow::MainWindow()
     m_renderTimer.setInterval(90);
     connect(&m_renderTimer, &QTimer::timeout, this, &MainWindow::renderAnswer);
 
-    connect(m_ai, &AiClient::contentDelta, this, [this](const QString &t) { m_raw += t; scheduleRender(); });
-    connect(m_ai, &AiClient::reasoningDelta, this, [this](const QString &) { m_reasoningSeen = true; scheduleRender(); });
-    connect(m_ai, &AiClient::finished, this, [this] {
+    // Groq／本地（AiClient）與 GitHub Copilot（CopilotClient）發出同樣的四個訊號，共用同一組處理
+    const auto onContent = [this](const QString &t) { m_raw += t; scheduleRender(); };
+    const auto onReasoning = [this](const QString &) { m_reasoningSeen = true; scheduleRender(); };
+    const auto onFinished = [this] {
         const QString text = visibleAnswer();
         m_history.append(QJsonObject{{QStringLiteral("role"), QStringLiteral("assistant")}, {QStringLiteral("content"), text}});
         m_transcript += text;
@@ -97,15 +102,23 @@ MainWindow::MainWindow()
         m_hasAnswer = true;
         renderAnswer();
         setBusy(false, tr("完成"));
-    });
-    connect(m_ai, &AiClient::failed, this, [this](const QString &msg) {
+    };
+    const auto onFailed = [this](const QString &msg) {
         m_transcript += visibleAnswer();
         m_transcript += tr("\n\n> ⚠️ **請求失敗**：%1\n").arg(msg);
         m_raw.clear();
         m_reasoningSeen = false;
         renderAnswer();
         setBusy(false, tr("失敗"));
-    });
+    };
+    connect(m_ai, &AiClient::contentDelta, this, onContent);
+    connect(m_ai, &AiClient::reasoningDelta, this, onReasoning);
+    connect(m_ai, &AiClient::finished, this, onFinished);
+    connect(m_ai, &AiClient::failed, this, onFailed);
+    connect(m_copilot, &CopilotClient::contentDelta, this, onContent);
+    connect(m_copilot, &CopilotClient::reasoningDelta, this, onReasoning);
+    connect(m_copilot, &CopilotClient::finished, this, onFinished);
+    connect(m_copilot, &CopilotClient::failed, this, onFailed);
 
     connect(m_llama, &LlamaManager::stateChanged, this, [this](LlamaManager::State st) {
         updateProviderChip();
@@ -219,7 +232,7 @@ void MainWindow::buildUi()
     m_provider = new QComboBox;
     m_provider->addItem(QStringLiteral("Groq"), int(Provider::Groq));
     m_provider->addItem(tr("本地 LLM（llama.cpp + Qwythos）"), int(Provider::Local));
-    m_provider->addItem(QStringLiteral("GitHub Models"), int(Provider::GitHub));
+    m_provider->addItem(QStringLiteral("GitHub Copilot"), int(Provider::GitHub));
     m_provider->setCurrentIndex(qMax(0, m_provider->findData(st.value(QStringLiteral("opt/provider"), int(Provider::Groq)))));
     m_providerChip = new QLabel;
     auto *cfg = new QPushButton(tr("⚙ 設定"));
@@ -251,6 +264,7 @@ void MainWindow::buildUi()
     connect(m_btnCancel, &QPushButton::clicked, this, [this] {
         m_pendingAnalyze = false;
         m_ai->cancel();
+        m_copilot->cancel();
         m_transcript += visibleAnswer() + tr("\n\n> ⏹ 已取消\n");
         m_raw.clear();
         renderAnswer();
@@ -578,9 +592,9 @@ void MainWindow::runClean()
 // ---------------------------------------------------------------------------
 // AI
 // ---------------------------------------------------------------------------
-QString MainWindow::systemPrompt() const
+QString MainWindow::systemPrompt(const ProviderConfig &cfg) const
 {
-    return QStringLiteral(
+    QString base = QStringLiteral(
                "You are an expert Minecraft: Java Edition crash diagnostician. You know Fabric, Quilt, Forge, NeoForge, "
                "Mixin, JVM options, Java version requirements and GPU driver problems.\n"
                "The user sends a FILTERED log bundle: sections ## MODS, ## LATEST.LOG (filtered), ## CRASH REPORT, "
@@ -592,7 +606,11 @@ QString MainWindow::systemPrompt() const
                "3. **Fix steps** — concrete, ordered (which mod to update/remove, Java version, memory, drivers...).\n"
                "4. **If uncertain** — say exactly what extra information is needed.\n"
                "Be concise. Write the answer in %1.")
-        .arg(m_lang->currentText());
+                       .arg(m_lang->currentText());
+    // 三條規則（搜尋網路／不要猜測／深度思考）只加在 Groq 與 GitHub Copilot；本地 LLM 維持原樣
+    if (cfg.type != Provider::Local)
+        base += PromptRules::block(cfg.canSearch);
+    return base;
 }
 
 bool MainWindow::buildConfig(ProviderConfig *cfg)
@@ -601,29 +619,42 @@ bool MainWindow::buildConfig(ProviderConfig *cfg)
     auto &s = App::settings();
     cfg->type = p;
     switch (p) {
-    case Provider::Groq:
+    case Provider::Groq: {
         cfg->apiKey = SecureStore::load(QStringLiteral("groq_key"));
         cfg->endpoint = AiClient::groqEndpoint();
-        cfg->model = s.value(QStringLiteral("groq/model"), QStringLiteral("llama-3.3-70b-versatile")).toString();
+        cfg->model = s.value(QStringLiteral("groq/model"), App::defaultGroqModel()).toString();
         cfg->temperature = 0.3;
-        cfg->timeoutMs = 60000;
+        const QString effort = s.value(QStringLiteral("groq/reasoning"), QStringLiteral("high")).toString();
+        if (effort != QLatin1String("off") && ModelCatalog::groqSupportsReasoningEffort(cfg->model))
+            cfg->reasoningEffort = effort;
+        cfg->browserSearch = s.value(QStringLiteral("groq/search"), true).toBool() && ModelCatalog::groqSupportsBrowserSearch(cfg->model);
+        cfg->canSearch = cfg->browserSearch;
+        cfg->timeoutMs = cfg->browserSearch || !cfg->reasoningEffort.isEmpty() ? 180000 : 60000; // 搜尋／深度推理期間可能很久沒有輸出
         if (cfg->apiKey.isEmpty()) {
             QMessageBox::information(this, tr("需要 Groq 金鑰"), tr("請先到「⚙ 設定」輸入 Groq API 金鑰。"));
             openSettings();
             return false;
         }
         return true;
-    case Provider::GitHub:
-        cfg->apiKey = SecureStore::load(QStringLiteral("github_pat"));
-        cfg->endpoint = AiClient::githubEndpoint();
-        cfg->model = s.value(QStringLiteral("github/model"), QStringLiteral("openai/gpt-4.1")).toString();
-        cfg->timeoutMs = 90000; // 推理模型不送 temperature
-        if (cfg->apiKey.isEmpty()) {
-            QMessageBox::information(this, tr("需要 GitHub Token"), tr("請先到「⚙ 設定」建立並輸入 PAT（Models: read）。"));
+    }
+    case Provider::GitHub: {
+        cfg->cliPath = s.value(QStringLiteral("copilot/cliPath")).toString();
+        if (!CopilotClient::locate(cfg->cliPath).ok()) {
+            QMessageBox::information(this, tr("需要 Copilot CLI"),
+                                     tr("GitHub Copilot 管道使用官方 Copilot CLI。\n請先安裝（npm install -g @github/copilot），"
+                                        "或到「⚙ 設定 → GitHub Copilot」指定 copilot 的路徑。"));
             openSettings();
             return false;
         }
+        cfg->apiKey = SecureStore::load(QStringLiteral("github_pat")); // 可為空：沿用 copilot login
+        cfg->model = s.value(QStringLiteral("copilot/model"), App::defaultCopilotModel()).toString();
+        cfg->autoTier = s.value(QStringLiteral("copilot/autotier")).toString();
+        cfg->reasoningEffort = s.value(QStringLiteral("copilot/reasoning")).toString();
+        cfg->cliAllowTools = s.value(QStringLiteral("copilot/search"), true).toBool();
+        cfg->canSearch = cfg->cliAllowTools;
+        cfg->timeoutMs = 10 * 60 * 1000;
         return true;
+    }
     case Provider::Local:
         if (m_llama->serverExe().isEmpty() || !m_llama->modelInstalled()) {
             QMessageBox::information(this, tr("本地 LLM 尚未就緒"), tr("請先到「⚙ 設定 → 本地 LLM」下載 llama.cpp 與模型。"));
@@ -669,7 +700,7 @@ void MainWindow::runAnalyze()
     const QString user = QStringLiteral("Instance: %1\nUser note: %2\n\nFiltered log bundle:\n```\n%3\n```")
                              .arg(idx >= 0 ? m_inst[idx].name : QString(), note.isEmpty() ? QStringLiteral("(none)") : note,
                                   m_cleaned->toPlainText());
-    m_history = QJsonArray{QJsonObject{{QStringLiteral("role"), QStringLiteral("system")}, {QStringLiteral("content"), systemPrompt()}},
+    m_history = QJsonArray{QJsonObject{{QStringLiteral("role"), QStringLiteral("system")}, {QStringLiteral("content"), systemPrompt(m_cfg)}},
                            QJsonObject{{QStringLiteral("role"), QStringLiteral("user")}, {QStringLiteral("content"), user}}};
     m_transcript.clear();
     m_raw.clear();
@@ -678,7 +709,15 @@ void MainWindow::runAnalyze()
     m_tabs->setCurrentWidget(m_answer);
     setBusy(true, tr("AI 分析中…"));
     renderAnswer();
-    m_ai->send(m_cfg, m_history);
+    dispatchSend();
+}
+
+void MainWindow::dispatchSend()
+{
+    if (m_cfg.type == Provider::GitHub)
+        m_copilot->send(m_cfg, m_history);
+    else
+        m_ai->send(m_cfg, m_history);
 }
 
 void MainWindow::sendFollowUp()
@@ -697,7 +736,7 @@ void MainWindow::sendFollowUp()
     m_reasoningSeen = false;
     setBusy(true, tr("AI 分析中…"));
     renderAnswer();
-    m_ai->send(m_cfg, m_history);
+    dispatchSend();
 }
 
 void MainWindow::setBusy(bool busy, const QString &msg)
@@ -760,8 +799,8 @@ void MainWindow::updateProviderChip()
         text = ok ? tr("✔ 金鑰已設定") : tr("尚未設定金鑰");
         break;
     case Provider::GitHub:
-        ok = SecureStore::has(QStringLiteral("github_pat"));
-        text = ok ? tr("✔ Token 已設定") : tr("尚未設定 Token");
+        ok = CopilotClient::locate(App::settings().value(QStringLiteral("copilot/cliPath")).toString()).ok();
+        text = ok ? tr("✔ 已找到 Copilot CLI") : tr("尚未安裝 Copilot CLI");
         break;
     case Provider::Local: {
         const bool ready = !m_llama->serverExe().isEmpty() && m_llama->modelInstalled();
@@ -787,6 +826,7 @@ void MainWindow::openSettings()
 void MainWindow::closeEvent(QCloseEvent *e)
 {
     m_ai->cancel();
+    m_copilot->cancel();
     m_llama->cancelTask();
     m_llama->stopServer();
     auto &s = App::settings();

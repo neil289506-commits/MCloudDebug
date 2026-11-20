@@ -45,7 +45,7 @@
     <li>Identical messages (after number normalisation) merged into (×N)</li>
     <li>At most 12 frames per stack; the rest are folded</li></ul></div>
 </div>
-<p>When over the character cap, lower-priority entries are dropped first; ERROR / FATAL are touched last. The default cap is 14,000 characters (≈4–5k tokens) because Groq's free tier and GitHub Models have small per-request token limits.</p>
+<p>When over the character cap, lower-priority entries are dropped first; ERROR / FATAL are touched last. The default cap is 14,000 characters (≈4–5k tokens) because Groq's free tier has a small per-request token limit.</p>
 <h2 id="crash">Crash report extraction</h2>
 <div class="grid">
   <div class="card"><h3><code>crash-reports/</code></h3><p>Takes the newest report and extracts the main stack, Head, key System Details and Suspected Mods.</p></div>

@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI Providers · MC Debugger</title>
-<meta name="description" content="Differences and setup for Groq, local LLM and GitHub Models.">
+<meta name="description" content="Differences and setup for Groq, local LLM and GitHub Copilot.">
 <meta name="theme-color" content="#0b1118">
 <meta property="og:title" content="AI Providers · MC Debugger">
-<meta property="og:description" content="Differences and setup for Groq, local LLM and GitHub Models.">
+<meta property="og:description" content="Differences and setup for Groq, local LLM and GitHub Copilot.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
 <link rel="canonical" href="https://neil289506-commits.github.io/MCloudDebug/en/ai.html">
@@ -26,14 +26,14 @@
     <button id="menu" class="icon only-m" aria-label="Menu" aria-expanded="false">☰</button>
   </div>
 </div></header>
-<section class="phead"><div class="wrap"><h1>AI Providers</h1><p>Differences and setup for Groq, local LLM and GitHub Models.</p></div></section>
+<section class="phead"><div class="wrap"><h1>AI Providers</h1><p>Differences and setup for Groq, local LLM and GitHub Copilot.</p></div></section>
 <main class="wrap">
 
 <div class="tw"><table>
 <tr><th>Provider</th><th>Endpoint</th><th>Auth</th><th>Best for</th></tr>
 <tr><td><b>Groq</b></td><td><code>https://api.groq.com/openai/v1/chat/completions</code></td><td>API Key</td><td>Fast responses</td></tr>
 <tr><td><b>Local LLM</b></td><td><code>llama-server</code> (127.0.0.1, random port) <code>/v1/chat/completions</code></td><td>None</td><td>Keeping data on your PC</td></tr>
-<tr><td><b>GitHub Models</b></td><td><code>https://models.github.ai/inference/chat/completions</code></td><td>Fine-grained PAT (<code>models: read</code>)</td><td>You already use GitHub</td></tr>
+<tr><td><b>GitHub Copilot</b></td><td>Official <code>copilot</code> CLI (non-interactive <code>-p</code>)</td><td>Copilot subscription (<code>copilot login</code> or a token)</td><td>You already have Copilot</td></tr>
 </table></div>
 <h2>Local LLM details</h2>
 <ul class="l">
@@ -50,8 +50,10 @@
  <li>Extract with PowerShell <code>Expand-Archive</code></li>
 </ol>
 <p>If <code>nightly-tag.txt</code> is missing, it falls back to the redirect tag.</p>
-<h2>The GitHub route is GitHub Models</h2>
-<div class="note">The public inference API reachable with a PAT is GitHub Models, not Copilot Chat. The author found no documented public endpoint for calling Copilot Chat with a PAT, so it is not faked. The model list comes from <code>models.github.ai/catalog/models</code>.</div>
+<h2>The GitHub route is GitHub Copilot (via the Copilot CLI)</h2>
+<div class="note">The old GitHub route called GitHub Models, which GitHub retired on 2026-07-30. It now runs the official <code>copilot</code> CLI as a child process (install: <code>npm install -g @github/copilot</code>). The default model is <code>auto</code>; shell and file-write tools are always denied. The model-ID list in Settings is derived from the official display names and is <b>not verified one by one</b> — type any ID, and use <code>/model</code> inside the CLI to see what your plan offers.</div>
+<h2>Prompt rules</h2>
+<p>Settings → Prompt rules adds three rules to the Groq and GitHub Copilot system prompts: <b>search the web</b>, <b>do not guess (say "I don't know")</b>, <b>think deeply</b>. Each can be turned off. The search rule is only added when that route and model really have a search tool (Groq <code>gpt-oss</code> models via built-in <code>browser_search</code>; Copilot with web access allowed). The Groq default is <code>openai/gpt-oss-120b</code> with high reasoning effort.</p>
 
 </main>
 <footer><div class="wrap">

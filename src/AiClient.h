@@ -7,6 +7,7 @@
 
 class QNetworkReply;
 
+// GitHub = GitHub Copilot（透過官方 Copilot CLI）。舊版的 GitHub Models 已於 2026-07-30 退役。
 enum class Provider { Groq, Local, GitHub };
 
 struct ProviderConfig
@@ -19,9 +20,20 @@ struct ProviderConfig
     double topP = -1;
     int maxTokens = 0;       // 0 代表不送
     int timeoutMs = 60000;   // 「多久沒收到任何資料」就視為逾時（本地 CPU 推理需要很長）
+
+    // 推理與搜尋
+    QString reasoningEffort;    // Groq：low / medium / high；空字串代表不送
+    bool browserSearch = false; // Groq：啟用伺服器端內建工具 browser_search
+    bool canSearch = false;     // 這次請求是否真的有網路搜尋能力（決定提示詞要不要加「搜尋網路」）
+
+    // GitHub Copilot CLI
+    QString cliPath;            // 使用者指定的 copilot 路徑；空字串代表自動尋找
+    QString autoTier;           // efficiency / balance / intelligence；空字串代表不指定
+    bool cliAllowTools = true;  // 允許 CLI 使用唯讀工具（網路搜尋／抓網頁）；shell 與寫檔一律封鎖
 };
 
-// 單一請求的串流客戶端：三個管道都走 OpenAI 相容的 /chat/completions（SSE）
+// 單一請求的串流客戶端：Groq 與本地 LLM 走 OpenAI 相容的 /chat/completions（SSE）
+// GitHub Copilot 另走 CopilotClient（Copilot CLI 子行程）
 class AiClient : public QObject
 {
     Q_OBJECT
@@ -29,23 +41,22 @@ public:
     explicit AiClient(QObject *parent = nullptr);
 
     static QUrl groqEndpoint();
-    static QUrl githubEndpoint();
     static QString providerId(Provider p);
 
     void send(const ProviderConfig &cfg, const QJsonArray &messages);
     void cancel();
     bool busy() const { return !m_reply.isNull(); }
 
-    // 取得模型清單（Groq: /openai/v1/models；GitHub: models.github.ai/catalog/models）
-    void fetchModels(Provider p, const QString &apiKey);
+    // 取得 Groq 模型清單（/openai/v1/models）
+    void fetchModels(const QString &apiKey);
 
 signals:
     void contentDelta(const QString &text);
     void reasoningDelta(const QString &text);
     void finished();
     void failed(const QString &message);
-    void modelsReady(Provider p, const QStringList &ids);
-    void modelsFailed(Provider p, const QString &message);
+    void modelsReady(const QStringList &ids);
+    void modelsFailed(const QString &message);
 
 private:
     void onReadyRead();
@@ -60,4 +71,5 @@ private:
     QByteArray m_raw;
     QString m_streamError;
     bool m_canceled = false;
+    bool m_usedTools = false;
 };

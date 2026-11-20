@@ -39,7 +39,7 @@
 <h2>プロバイダーごとの準備</h2>
 <div class="grid">
  <div class="card"><h3>Groq</h3><p>API キーを作成して設定に貼り付けます。キーは DPAPI で暗号化して保存されます。</p></div>
- <div class="card"><h3>GitHub Models</h3><p>Fine-grained PAT を作成：Account permissions → Models → Read-only（<code>models: read</code>）。</p></div>
+ <div class="card"><h3>GitHub Copilot</h3><p>Copilot CLI をインストール（<code>npm install -g @github/copilot</code>）して <code>copilot login</code> を実行するか、設定にトークンを貼り付けます。Copilot のサブスクリプションが必要です。</p></div>
  <div class="card"><h3>ローカルLLM</h3><p>設定から llama.cpp とモデルをダウンロードします。Q4_K_M は約 5.24 GiB なので、ディスクとメモリに余裕を持たせてください。</p></div>
 </div>
 <div class="note"><b>ヒント：</b>PAT の URL 事前入力機能は 2026-05 に GitHub のドキュメントから削除されたため、リンクで項目が自動入力されない場合があります。上記の手動手順で設定してください。</div>

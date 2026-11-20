@@ -6,16 +6,12 @@
 #include <QNetworkRequest>
 
 namespace {
-void applyCommonHeaders(QNetworkRequest &req, Provider p, const QString &key)
+void applyCommonHeaders(QNetworkRequest &req, const QString &key)
 {
     req.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
     req.setHeader(QNetworkRequest::UserAgentHeader, QStringLiteral("MCDebugger/1.0"));
     if (!key.isEmpty())
         req.setRawHeader("Authorization", "Bearer " + key.toUtf8());
-    if (p == Provider::GitHub) {
-        req.setRawHeader("Accept", "application/vnd.github+json");
-        req.setRawHeader("X-GitHub-Api-Version", "2022-11-28");
-    }
 }
 } // namespace
 
@@ -25,7 +21,6 @@ AiClient::AiClient(QObject *parent)
 }
 
 QUrl AiClient::groqEndpoint() { return QUrl(QStringLiteral("https://api.groq.com/openai/v1/chat/completions")); }
-QUrl AiClient::githubEndpoint() { return QUrl(QStringLiteral("https://models.github.ai/inference/chat/completions")); }
 
 QString AiClient::providerId(Provider p)
 {
@@ -52,6 +47,7 @@ void AiClient::send(const ProviderConfig &cfg, const QJsonArray &messages)
     m_buf.clear();
     m_raw.clear();
     m_streamError.clear();
+    m_usedTools = cfg.browserSearch;
 
     QJsonObject body;
     body.insert(QStringLiteral("model"), cfg.model);
@@ -63,9 +59,16 @@ void AiClient::send(const ProviderConfig &cfg, const QJsonArray &messages)
         body.insert(QStringLiteral("top_p"), cfg.topP);
     if (cfg.maxTokens > 0)
         body.insert(QStringLiteral("max_tokens"), cfg.maxTokens);
+    if (!cfg.reasoningEffort.isEmpty())
+        body.insert(QStringLiteral("reasoning_effort"), cfg.reasoningEffort);
+    if (cfg.browserSearch) {
+        // Groq 內建工具：由伺服器端執行搜尋，不需要我們處理 tool call
+        body.insert(QStringLiteral("tools"), QJsonArray{QJsonObject{{QStringLiteral("type"), QStringLiteral("browser_search")}}});
+        body.insert(QStringLiteral("tool_choice"), QStringLiteral("auto"));
+    }
 
     QNetworkRequest req(cfg.endpoint);
-    applyCommonHeaders(req, cfg.type, cfg.apiKey);
+    applyCommonHeaders(req, cfg.apiKey);
     req.setTransferTimeout(cfg.timeoutMs);
 
     m_reply = m_nam.post(req, QJsonDocument(body).toJson(QJsonDocument::Compact));
@@ -158,7 +161,9 @@ void AiClient::onFinished()
         if (status == 401 || status == 403)
             hint = tr("（金鑰無效、已過期，或權限不足）");
         else if (status == 413 || status == 429)
-            hint = tr("（超過用量或單次 token 上限，請在左側調低「最大字元數」後重試）");
+            hint = tr("（超過用量或單次 token 上限，請在左側調低「最大字元數」，或到設定降低推理強度／關閉網路搜尋後重試）");
+        else if (status == 400 && m_usedTools)
+            hint = tr("（若與網路搜尋工具有關，可到「設定 → Groq」關閉網路搜尋後重試）");
         else if (status == 0)
             hint = tr("（網路中斷或逾時）");
         emit failed(tr("HTTP %1：%2 %3").arg(status).arg(msg, hint).trimmed());
@@ -172,45 +177,45 @@ void AiClient::onFinished()
     emit finished();
 }
 
-void AiClient::fetchModels(Provider p, const QString &apiKey)
+void AiClient::fetchModels(const QString &apiKey)
 {
-    const QUrl url = p == Provider::Groq ? QUrl(QStringLiteral("https://api.groq.com/openai/v1/models"))
-                                         : QUrl(QStringLiteral("https://models.github.ai/catalog/models"));
-    QNetworkRequest req(url);
-    applyCommonHeaders(req, p, apiKey);
+    QNetworkRequest req(QUrl(QStringLiteral("https://api.groq.com/openai/v1/models")));
+    applyCommonHeaders(req, apiKey);
     req.setTransferTimeout(20000);
     QNetworkReply *reply = m_nam.get(req);
-    connect(reply, &QNetworkReply::finished, this, [this, reply, p] {
+    connect(reply, &QNetworkReply::finished, this, [this, reply] {
         reply->deleteLater();
         const int status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
         const QByteArray body = reply->readAll();
         if (status >= 400 || reply->error() != QNetworkReply::NoError) {
-            emit modelsFailed(p, tr("HTTP %1：%2").arg(status).arg(errorFromBody(body).isEmpty() ? reply->errorString()
-                                                                                                : errorFromBody(body)));
+            const QString err = errorFromBody(body);
+            emit modelsFailed(tr("HTTP %1：%2").arg(status).arg(err.isEmpty() ? reply->errorString() : err));
             return;
         }
         const QJsonDocument doc = QJsonDocument::fromJson(body);
-        QJsonArray arr = doc.isArray() ? doc.array() : doc.object().value(QStringLiteral("data")).toArray();
+        const QJsonArray arr = doc.isArray() ? doc.array() : doc.object().value(QStringLiteral("data")).toArray();
+        // 排除語音、內容審查／防護、已停用的 compound 等非一般聊天模型
+        static const QStringList skip = {QStringLiteral("whisper"), QStringLiteral("tts"),      QStringLiteral("guard"),
+                                         QStringLiteral("safeguard"), QStringLiteral("playai"), QStringLiteral("orpheus"),
+                                         QStringLiteral("compound")};
         QStringList ids;
-        for (const QJsonValue &v : std::as_const(arr)) {
-            const QString id = v.toObject().value(QStringLiteral("id")).toString();
+        for (const QJsonValue &v : arr) {
+            const QJsonObject o = v.toObject();
+            const QString id = o.value(QStringLiteral("id")).toString();
             if (id.isEmpty())
                 continue;
-            if (p == Provider::Groq) { // 排除語音/內容審查等非聊天模型
-                static const QStringList skip = {QStringLiteral("whisper"), QStringLiteral("tts"),
-                                                 QStringLiteral("guard"), QStringLiteral("playai")};
-                bool bad = false;
-                for (const QString &s : skip)
-                    bad = bad || id.contains(s, Qt::CaseInsensitive);
-                if (bad)
-                    continue;
-            }
-            ids << id;
+            if (o.contains(QStringLiteral("active")) && !o.value(QStringLiteral("active")).toBool(true))
+                continue; // 已下架的模型
+            bool bad = false;
+            for (const QString &s : skip)
+                bad = bad || id.contains(s, Qt::CaseInsensitive);
+            if (!bad)
+                ids << id;
         }
         ids.sort();
         if (ids.isEmpty())
-            emit modelsFailed(p, tr("回應中沒有可用的模型"));
+            emit modelsFailed(tr("回應中沒有可用的模型"));
         else
-            emit modelsReady(p, ids);
+            emit modelsReady(ids);
     });
 }
