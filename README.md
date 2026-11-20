@@ -58,3 +58,18 @@ PAT 可用的公開推論 API 是 GitHub Models（需 `models: read`）。我沒
   Windows 專屬路徑（DPAPI、PowerShell 解壓、`CREATE_NO_WINDOW`）已寫好但**只通過語法檢查，未實測**。
 - Forge/NeoForge 的 latest.log 通常不含完整 Mod 清單；有 crash-report 時會嘗試從 `Mod List:` 區段補。
 - GitHub Models 的模型 ID 清單由 `models.github.ai/catalog/models` 取得；回應格式我依文件假設為陣列或 `{data:[…]}`，並做了容錯。
+
+## 授權
+本專案以 **PolyForm Shield License 1.0.0** 釋出（見 `LICENSE`）。
+- 可以：使用、修改、散布（散布時須附上授權條款或其網址，以及 `Required Notice:` 行）。
+- 不可以：用它來提供**與本軟體競爭**的產品或服務。
+- 這是 *source-available* 授權，**不是** OSI 定義的開源授權。
+- 條款全文取自 PolyForm 官方文字（https://polyformproject.org/licenses/shield/1.0.0 ；比對來源：ScanCode LicenseDB）。
+- 我沒有加 `Licensor Line of Business:` 行（可選）。不加的話，若你日後停止提供某項產品，別人可以開始做與它競爭的東西。
+
+### 第三方元件（請自行確認各自的條款）
+- **Qt 6**（Widgets / Network）：以動態連結方式隨 `windeployqt` 散布；Qt 在 LGPLv3 / GPL / 商業授權之間擇一，散布時須遵守你所選方案的義務（例如附上授權文字、讓使用者能替換 Qt 函式庫）。
+- **llama.cpp**：由程式在使用者電腦上從官方 releases 下載，不隨本專案散布。
+- **Qwythos 模型**：由使用者從 Hugging Face 下載，不隨本專案散布；模型本身有自己的授權，使用前請閱讀模型卡。
+
+> 以上不是法律意見。

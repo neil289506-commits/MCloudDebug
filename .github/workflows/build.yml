@@ -76,6 +76,7 @@ jobs:
           Copy-Item "build/Release/$env:APP_NAME.exe" "dist/$env:APP_NAME/"
           & "$env:QT_ROOT_DIR/bin/windeployqt.exe" --release --no-translations --compiler-runtime "dist/$env:APP_NAME/$env:APP_NAME.exe"
           Copy-Item README.md "dist/$env:APP_NAME/"
+          Copy-Item LICENSE "dist/$env:APP_NAME/"
           Get-ChildItem "dist/$env:APP_NAME" | Select-Object Name, Length
 
       - name: Smoke test (程式能啟動且不立刻崩潰)
