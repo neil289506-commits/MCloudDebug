@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>功能 · MC Debugger</title>
+<meta name="description" content="Log 整理、崩潰報告萃取與個資遮蔽的完整規則。">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="功能 · MC Debugger">
+<meta property="og:description" content="Log 整理、崩潰報告萃取與個資遮蔽的完整規則。">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html">首頁</a><a href="features.html" class="on">功能</a><a href="guide.html">使用教學</a><a href="ai.html">AI 管道</a><a href="privacy.html">隱私與安全</a><a href="download.html">下載</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <button id="theme" class="icon" aria-label="切換深淺色" title="切換深淺色">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="選單" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="phead"><div class="wrap"><h1>功能</h1><p>Log 整理、崩潰報告萃取與個資遮蔽的完整規則。</p></div></section>
+<main class="wrap">
+
+<div class="toc"><a href="#clean">Log 整理</a><a href="#crash">崩潰報告</a><a href="#mask">個資遮蔽</a><a href="#mods">Mod 清單</a></div>
+<h2 id="clean">Log 整理策略</h2>
+<p>整理器會解析 vanilla、Forge、Fabric 三種標頭格式；沒有標頭的行視為前一筆訊息的延續（也就是堆疊追蹤）。</p>
+<div class="two">
+  <div class="card"><h3>✅ 保留</h3><ul class="l keep"><li>ERROR / FATAL（最高優先）</li><li>WARN</li><li>含關鍵字的 INFO</li><li>前 12 筆（環境資訊）</li><li>後 12 筆（崩潰前的動作）</li><li>每個錯誤之前的 3 筆上下文</li></ul></div>
+  <div class="card"><h3>🗑 丟棄 / 壓縮</h3><ul class="l drop"><li>DEBUG / TRACE</li><li>已知 INFO 雜訊（資源重載、音效初始化、聊天…）</li><li>相同訊息（數字正規化後）合併為 (×N)</li><li>每段堆疊最多 12 個 frame，其餘折疊</li></ul></div>
+</div>
+<p>超出字元上限時，依優先級由低到高丟棄；ERROR / FATAL 最後才會動到。預設上限 14,000 字元（約 4–5k tokens），因為 Groq 免費層與 GitHub Models 的單次 token 限制較小。</p>
+<h2 id="crash">崩潰報告萃取</h2>
+<div class="grid">
+  <div class="card"><h3><code>crash-reports/</code></h3><p>取最新一份，擷取主堆疊、Head、System Details 重點與 Suspected Mods。</p></div>
+  <div class="card"><h3><code>hs_err_pid*.log</code></h3><p>JVM 原生崩潰：保留 <code>#</code> 摘要與原生堆疊。</p></div>
+</div>
+<h2 id="mods">Mod 清單</h2>
+<p>Fabric / Quilt 的 <code>Loading N mods:</code> 會壓成一行。Forge / NeoForge 的 latest.log 通常不含完整清單；有 crash-report 時，會嘗試從 <code>Mod List:</code> 區段補上。</p>
+<h2 id="mask">個資遮蔽</h2>
+<div class="tw"><table>
+<tr><th>類型</th><th>處理</th></tr>
+<tr><td>Windows / Unix 使用者目錄</td><td>遮蔽</td></tr>
+<tr><td>accessToken、Session ID</td><td>遮蔽</td></tr>
+<tr><td><code>Setting user:</code> 後的玩家名</td><td>遮蔽</td></tr>
+<tr><td>UUID</td><td>遮蔽</td></tr>
+<tr><td><code>IP:Port</code></td><td>遮蔽</td></tr>
+</table></div>
+<div class="warn"><b>無法保證完全匿名。</b>送出前請務必看過預覽。</div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">首頁</a><a href="features.html">功能</a><a href="guide.html">使用教學</a><a href="ai.html">AI 管道</a><a href="privacy.html">隱私與安全</a><a href="download.html">下載</a><a href="faq.html">FAQ</a><a href="build.html">自行建置</a><a href="license.html">授權</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0。非 Mojang / Microsoft 官方產品。</p>
+</div></footer>
+<script src="assets/js/main.js" defer></script>
+</body></html>

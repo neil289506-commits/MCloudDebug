@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>使用教學 · MC Debugger</title>
+<meta name="description" content="五個步驟：選實例、挑 AI 管道、預覽、送出。">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="使用教學 · MC Debugger">
+<meta property="og:description" content="五個步驟：選實例、挑 AI 管道、預覽、送出。">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html">首頁</a><a href="features.html">功能</a><a href="guide.html" class="on">使用教學</a><a href="ai.html">AI 管道</a><a href="privacy.html">隱私與安全</a><a href="download.html">下載</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <button id="theme" class="icon" aria-label="切換深淺色" title="切換深淺色">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="選單" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="phead"><div class="wrap"><h1>使用教學</h1><p>五個步驟：選實例、挑 AI 管道、預覽、送出。</p></div></section>
+<main class="wrap">
+
+<ol class="steps">
+ <li class="reveal"><h3>取得程式</h3><p>從<a href="download.html">下載頁</a>取得 Windows 版並解壓縮，執行 <code>MCDebugger.exe</code>。</p></li>
+ <li class="reveal"><h3>選擇 Minecraft 實例</h3><p>選出出問題的實例，程式會讀取它的 <code>latest.log</code>，並找最新的崩潰報告。</p></li>
+ <li class="reveal"><h3>挑一條 AI 管道</h3><p>在設定中選 Groq、本地 LLM 或 GitHub，填入對應認證。三條管道的差別見 <a href="ai.html">AI 管道</a>。</p></li>
+ <li class="reveal"><h3>檢查預覽</h3><p>確認整理後的內容與遮蔽結果沒問題，再往下一步。</p></li>
+ <li class="reveal"><h3>送出並閱讀診斷</h3><p>AI 會根據整理後的 log 回覆可能原因與處理方向。結果僅供參考，建議對照原始 log 驗證。</p></li>
+</ol>
+<h2>各管道的準備工作</h2>
+<div class="grid">
+ <div class="card"><h3>Groq</h3><p>建立 API Key 後貼到設定。Key 會用 DPAPI 加密存放。</p></div>
+ <div class="card"><h3>GitHub Models</h3><p>建立 Fine-grained PAT：Account permissions → Models → Read-only（<code>models: read</code>）。</p></div>
+ <div class="card"><h3>本地 LLM</h3><p>在設定中下載 llama.cpp 與模型。模型 Q4_K_M 約 5.24 GiB，請預留硬碟與記憶體。</p></div>
+</div>
+<div class="note"><b>提示：</b>預填 PAT 連結的功能已被 GitHub 在 2026-05 從文件移除，連結可能不會自動帶入欄位，請依上面的手動步驟設定。</div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">首頁</a><a href="features.html">功能</a><a href="guide.html">使用教學</a><a href="ai.html">AI 管道</a><a href="privacy.html">隱私與安全</a><a href="download.html">下載</a><a href="faq.html">FAQ</a><a href="build.html">自行建置</a><a href="license.html">授權</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0。非 Mojang / Microsoft 官方產品。</p>
+</div></footer>
+<script src="assets/js/main.js" defer></script>
+</body></html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minecraft 崩潰診斷工具 · MC Debugger</title>
+<meta name="description" content="整理 latest.log、遮蔽個資，交給 AI 分析 Minecraft 崩潰原因。">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="Minecraft 崩潰診斷工具 · MC Debugger">
+<meta property="og:description" content="整理 latest.log、遮蔽個資，交給 AI 分析 Minecraft 崩潰原因。">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html" class="on">首頁</a><a href="features.html">功能</a><a href="guide.html">使用教學</a><a href="ai.html">AI 管道</a><a href="privacy.html">隱私與安全</a><a href="download.html">下載</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <button id="theme" class="icon" aria-label="切換深淺色" title="切換深淺色">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="選單" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="hero"><div class="wrap">
+  <img class="lg" src="assets/img/logo.svg" alt="MC Debugger 標誌">
+  <h1>Minecraft 崩潰了？<br><span class="grad">讓 AI 幫你讀 Log</span></h1>
+  <p class="lead">選實例、自動整理 <code>latest.log</code>、遮蔽個資，再交給 Groq、本機 LLM 或 GitHub Models 分析。</p>
+  <a class="btn p" href="download.html">⬇ 下載 Windows 版</a><a class="btn" href="https://github.com/neil289506-commits/MCloudDebug">原始碼</a>
+  <div class="badges"><span class="badge">Qt 6 Widgets</span><span class="badge">Windows</span><span class="badge">金鑰 DPAPI 加密</span><span class="badge">PolyForm Shield 1.0.0</span></div>
+</div></section>
+<main class="wrap">
+
+<div class="stats">
+  <div class="stat reveal"><b class="grad">3</b><span>AI 管道可選</span></div>
+  <div class="stat reveal"><b class="grad">14,000</b><span>預設字元上限</span></div>
+  <div class="stat reveal"><b class="grad">3</b><span>支援 vanilla / Forge / Fabric 標頭</span></div>
+  <div class="stat reveal"><b class="grad">0</b><span>額外函式庫（僅 Qt Widgets + Network）</span></div>
+</div>
+<h2>運作流程</h2>
+<div class="diagram reveal"><img src="assets/img/pipeline.svg" alt="流程圖：選實例、讀取 Log、整理、遮蔽與預覽、交給 AI"></div>
+<h2>為什麼用它</h2>
+<div class="grid g2">
+  <div class="card reveal"><div class="ico">🧹</div><h3>先整理再送</h3><p>丟掉 DEBUG 與已知雜訊，重複訊息合併成 (×N)，長堆疊自動折疊，省 token 也讓 AI 抓得到重點。</p></div>
+  <div class="card reveal"><div class="ico">🔒</div><h3>預設保護隱私</h3><p>使用者目錄、accessToken、玩家名、UUID、IP:Port 都會遮蔽，送出前可預覽整份內容。</p></div>
+  <div class="card reveal"><div class="ico">🧠</div><h3>三條 AI 路線</h3><p>雲端 Groq、完全離線的本機 llama.cpp，或用 GitHub PAT 呼叫 GitHub Models。</p></div>
+  <div class="card reveal"><div class="ico">📄</div><h3>不只看 latest.log</h3><p>同時萃取最新 crash-reports 與 hs_err_pid 原生崩潰報告，含主堆疊與嫌疑 Mod。</p></div>
+</div>
+<div class="cta reveal"><h2>從下載開始</h2><p>解壓縮就能用，不需要安裝額外執行環境。</p><a class="btn p" href="guide.html">看使用教學</a><a class="btn" href="faq.html">常見問題</a></div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">首頁</a><a href="features.html">功能</a><a href="guide.html">使用教學</a><a href="ai.html">AI 管道</a><a href="privacy.html">隱私與安全</a><a href="download.html">下載</a><a href="faq.html">FAQ</a><a href="build.html">自行建置</a><a href="license.html">授權</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0。非 Mojang / Microsoft 官方產品。</p>
+</div></footer>
+<script src="assets/js/main.js" defer></script>
+</body></html>

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://neil289506-commits.github.io/MCloudDebug/sitemap.xml

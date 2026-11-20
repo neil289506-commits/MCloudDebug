@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>隱私與安全 · MC Debugger</title>
+<meta name="description" content="金鑰加密方式、遮蔽範圍與你該自己確認的事。">
+<meta name="theme-color" content="#0b1118">
+<meta property="og:title" content="隱私與安全 · MC Debugger">
+<meta property="og:description" content="金鑰加密方式、遮蔽範圍與你該自己確認的事。">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="index.html"><img src="assets/img/logo.svg" alt="" width="28" height="28"><span>MC Debugger</span></a>
+  <nav id="nav"><a href="index.html">首頁</a><a href="features.html">功能</a><a href="guide.html">使用教學</a><a href="ai.html">AI 管道</a><a href="privacy.html" class="on">隱私與安全</a><a href="download.html">下載</a><a href="faq.html">FAQ</a></nav>
+  <div class="tools">
+    <button id="theme" class="icon" aria-label="切換深淺色" title="切換深淺色">🌓</button>
+    <button id="menu" class="icon only-m" aria-label="選單" aria-expanded="false">☰</button>
+  </div>
+</div></header>
+<section class="phead"><div class="wrap"><h1>隱私與安全</h1><p>金鑰加密方式、遮蔽範圍與你該自己確認的事。</p></div></section>
+<main class="wrap">
+
+<h2>金鑰如何保存</h2>
+<p>API Key 與 PAT 以 <b>Windows DPAPI</b>（<code>CryptProtectData</code> + 應用程式專屬 entropy）加密，密文（Base64）寫在 <code>%APPDATA%\MCDebugger\settings.ini</code>。只有同一個 Windows 帳號能解開。</p>
+<div class="note"><b>非 Windows 平台會拒絕儲存</b>，不會退回明文。</div>
+<h2>會送出什麼</h2>
+<ul class="l"><li>整理並遮蔽後的 log 摘要（預設上限 14,000 字元）</li><li>崩潰報告的重點段落</li><li>選本地 LLM 時，內容只在本機與 127.0.0.1 之間傳遞</li></ul>
+<h2>你該自己做的事</h2>
+<div class="warn"><b>遮蔽是規則式的，無法保證完全匿名。</b>伺服器位址、自訂路徑、聊天內容等仍可能殘留，送出前請檢查預覽。</div>
+
+</main>
+<footer><div class="wrap">
+  <div class="fl"><a href="index.html">首頁</a><a href="features.html">功能</a><a href="guide.html">使用教學</a><a href="ai.html">AI 管道</a><a href="privacy.html">隱私與安全</a><a href="download.html">下載</a><a href="faq.html">FAQ</a><a href="build.html">自行建置</a><a href="license.html">授權</a><a href="https://github.com/neil289506-commits/MCloudDebug">GitHub</a></div>
+  <p>MC Debugger — PolyForm Shield 1.0.0。非 Mojang / Microsoft 官方產品。</p>
+</div></footer>
+<script src="assets/js/main.js" defer></script>
+</body></html>
